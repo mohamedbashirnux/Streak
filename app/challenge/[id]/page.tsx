@@ -186,6 +186,14 @@ export default function ChallengeDetailPage() {
                   {format(new Date(challenge.startDate), "MMM d, yyyy")}
                 </span>
               </div>
+              {challenge.completedAt && (
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Completed:</span>
+                  <span className="text-green-500 font-medium">
+                    {format(new Date(challenge.completedAt), "MMM d, yyyy")}
+                  </span>
+                </div>
+              )}
               <div className="flex justify-between">
                 <span className="text-gray-400">Longest Streak:</span>
                 <span className="text-white">{challenge.longestStreak} days</span>
@@ -208,9 +216,6 @@ export default function ChallengeDetailPage() {
               onCheckIn={handleCheckIn}
               disabled={!canCheckIn}
             />
-            {!canCheckIn && todayDay?.status === "success" && (
-              <p className="text-center text-green-500 text-sm mt-2">✅ Checked in today!</p>
-            )}
           </div>
         )}
 
