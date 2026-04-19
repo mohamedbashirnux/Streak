@@ -1,0 +1,224 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter, useParams } from "next/navigation";
+import Navbar from "@/components/layout/Navbar";
+import Card from "@/components/ui/Card";
+import Button from "@/components/ui/Button";
+import ProgressRing from "@/components/challenge/ProgressRing";
+import CalendarHeatmap from "@/components/challenge/CalendarHeatmap";
+import CheckInButton from "@/components/challenge/CheckInButton";
+import { Challenge } from "@/types";
+import { Loader2, Trash2, Ban, Target, Flame } from "lucide-react";
+import { format } from "date-fns";
+import toast from "react-hot-toast";
+
+export default function ChallengeDetailPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const params = useParams();
+  const [challenge, setChallenge] = useState<Challenge | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
+    }
+  }, [status, router]);
+
+  useEffect(() => {
+    if (session?.user?.id && params.id) {
+      fetchChallenge();
+    }
+  }, [session, params.id]);
+
+  const fetchChallenge = async () => {
+    try {
+      const res = await fetch(`/api/challenges/${params.id}`);
+      if (res.ok) {
+        const data = await res.json();
+        setChallenge(data);
+      } else {
+        toast.error("Challenge not found");
+        router.push("/dashboard");
+      }
+    } catch (error) {
+      toast.error("Failed to load challenge");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCheckIn = async (success: boolean) => {
+    try {
+      const res = await fetch(`/api/challenges/${params.id}/checkin`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ success }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setChallenge(data.challenge);
+        toast.success(data.message);
+        
+        if (data.earnedBadge) {
+          toast.success(`🎉 Badge earned: ${data.earnedBadge}!`, { duration: 5000 });
+        }
+      } else {
+        toast.error(data.error || "Check-in failed");
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!confirm("Are you sure you want to delete this challenge?")) return;
+
+    try {
+      const res = await fetch(`/api/challenges/${params.id}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        toast.success("Challenge deleted");
+        router.push("/dashboard");
+      } else {
+        toast.error("Failed to delete challenge");
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+    }
+  };
+
+  if (status === "loading" || !session) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="animate-spin text-green-500" size={48} />
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen">
+        <Navbar />
+        <div className="flex justify-center py-12">
+          <Loader2 className="animate-spin text-green-500" size={48} />
+        </div>
+      </div>
+    );
+  }
+
+  if (!challenge) return null;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const todayDay = challenge.days.find((day) => {
+    const dayDate = new Date(day.date);
+    dayDate.setHours(0, 0, 0, 0);
+    return dayDate.getTime() === today.getTime();
+  });
+
+  const canCheckIn = todayDay && todayDay.status === "pending" && challenge.status === "active";
+
+  return (
+    <div className="min-h-screen">
+      <Navbar />
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex items-start justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center">
+              {challenge.type === "avoid" ? (
+                <Ban className="text-green-500" size={32} />
+              ) : (
+                <Target className="text-green-500" size={32} />
+              )}
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-white">{challenge.name}</h1>
+              <p className="text-gray-400 capitalize">{challenge.type} habit</p>
+            </div>
+          </div>
+          <Button variant="danger" size="sm" onClick={handleDelete}>
+            <Trash2 size={16} />
+          </Button>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
+          <Card className="flex flex-col items-center justify-center">
+            <ProgressRing current={challenge.currentStreak} total={challenge.duration} />
+            <p className="text-gray-400 mt-4">Progress</p>
+          </Card>
+
+          <Card>
+            <div className="flex items-center gap-3 mb-4">
+              <Flame className="text-orange-500" size={24} />
+              <h3 className="text-lg font-semibold text-white">Current Streak</h3>
+            </div>
+            <p className="text-4xl font-bold text-white">{challenge.currentStreak}</p>
+            <p className="text-gray-400 mt-2">days</p>
+          </Card>
+
+          <Card>
+            <h3 className="text-lg font-semibold text-white mb-4">Details</h3>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-400">Status:</span>
+                <span className={`font-medium capitalize ${
+                  challenge.status === "active" ? "text-green-500" :
+                  challenge.status === "completed" ? "text-blue-500" : "text-red-500"
+                }`}>
+                  {challenge.status}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Duration:</span>
+                <span className="text-white">{challenge.duration} days</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Started:</span>
+                <span className="text-white">
+                  {format(new Date(challenge.startDate), "MMM d, yyyy")}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Longest Streak:</span>
+                <span className="text-white">{challenge.longestStreak} days</span>
+              </div>
+            </div>
+          </Card>
+        </div>
+
+        {challenge.motivation && (
+          <Card className="mb-8">
+            <h3 className="text-lg font-semibold text-white mb-2">Motivation</h3>
+            <p className="text-gray-300 italic">"{challenge.motivation}"</p>
+          </Card>
+        )}
+
+        {challenge.status === "active" && (
+          <div className="mb-8 max-w-md mx-auto">
+            <CheckInButton
+              challengeId={challenge._id}
+              onCheckIn={handleCheckIn}
+              disabled={!canCheckIn}
+            />
+            {!canCheckIn && todayDay?.status === "success" && (
+              <p className="text-center text-green-500 text-sm mt-2">✅ Checked in today!</p>
+            )}
+          </div>
+        )}
+
+        <Card>
+          <h3 className="text-lg font-semibold text-white mb-6">Calendar</h3>
+          <CalendarHeatmap days={challenge.days} startDate={new Date(challenge.startDate)} />
+        </Card>
+      </main>
+    </div>
+  );
+}
