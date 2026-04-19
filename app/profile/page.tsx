@@ -77,6 +77,30 @@ export default function ProfilePage() {
     }
   };
 
+  const handleReset = async () => {
+    if (!confirm("⚠️ Are you sure? This will delete ALL your challenges, stats, and badges. Your account will remain but all progress will be lost. This cannot be undone!")) {
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await fetch("/api/user/reset", {
+        method: "POST",
+      });
+
+      if (res.ok) {
+        toast.success("All data cleared! Starting fresh 🔥");
+        router.push("/dashboard");
+      } else {
+        toast.error("Failed to reset data");
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (status === "loading" || !session) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -160,6 +184,16 @@ export default function ProfilePage() {
             ) : (
               <Button onClick={() => setEditing(true)}>Edit Profile</Button>
             )}
+
+            <div className="mt-8 pt-8 border-t border-gray-800">
+              <h3 className="text-lg font-semibold text-white mb-4">Danger Zone</h3>
+              <p className="text-gray-400 text-sm mb-4">
+                Clear all your challenges, stats, and badges. Your account will remain but all progress will be lost.
+              </p>
+              <Button variant="danger" onClick={handleReset} disabled={loading}>
+                Reset All Data
+              </Button>
+            </div>
           </Card>
         )}
       </main>
