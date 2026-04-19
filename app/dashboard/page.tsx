@@ -65,6 +65,16 @@ export default function DashboardPage() {
         if (data.earnedBadge) {
           toast.success(`🎉 Badge earned: ${data.earnedBadge}!`, { duration: 5000 });
         }
+
+        // Celebrate milestones
+        const milestones = [7, 21, 30, 60, 90];
+        if (milestones.includes(data.challenge.currentStreak)) {
+          toast(`🎉 ${data.challenge.currentStreak} day milestone! Keep going!`, {
+            duration: 5000,
+            icon: "🏆",
+            style: { background: "#166534", color: "#fff", border: "1px solid #22c55e" },
+          });
+        }
       } else {
         toast.error(data.error || "Check-in failed");
       }

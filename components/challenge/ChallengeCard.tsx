@@ -27,6 +27,7 @@ export default function ChallengeCard({ challenge, onCheckIn }: ChallengeCardPro
   });
 
   const canCheckIn = todayDay && todayDay.status === "pending";
+  const doneToday = todayDay?.status === "success";
 
   return (
     <motion.div
@@ -34,10 +35,13 @@ export default function ChallengeCard({ challenge, onCheckIn }: ChallengeCardPro
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <Card className="cursor-pointer" onClick={() => router.push(`/challenge/${challenge._id}`)}>
+      <Card
+        className={`cursor-pointer transition-all ${doneToday ? "border-green-500/40 bg-green-500/5" : ""}`}
+        onClick={() => router.push(`/challenge/${challenge._id}`)}
+      >
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center">
+            <div className={`w-12 h-12 rounded-full flex items-center justify-center ${doneToday ? "bg-green-500/20" : "bg-green-500/10"}`}>
               {challenge.type === "avoid" ? (
                 <Ban className="text-green-500" size={24} />
               ) : (
@@ -49,9 +53,14 @@ export default function ChallengeCard({ challenge, onCheckIn }: ChallengeCardPro
               <p className="text-sm text-gray-400 capitalize">{challenge.type} habit</p>
             </div>
           </div>
-          <div className="flex items-center gap-2 text-orange-500">
-            <Flame size={20} />
-            <span className="text-lg font-bold">{challenge.currentStreak}</span>
+          <div className="flex flex-col items-end gap-1">
+            <div className="flex items-center gap-2 text-orange-500">
+              <Flame size={20} />
+              <span className="text-lg font-bold">{challenge.currentStreak}</span>
+            </div>
+            {doneToday && (
+              <span className="text-xs text-green-500 font-medium">✅ Done today</span>
+            )}
           </div>
         </div>
 
