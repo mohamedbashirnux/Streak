@@ -80,10 +80,6 @@ export default function ChallengeCard({ challenge, onCheckIn }: ChallengeCardPro
             disabled={!canCheckIn}
           />
         </div>
-
-        {!canCheckIn && todayDay?.status === "success" && (
-          <p className="text-center text-green-500 text-sm mt-2">✅ Checked in today!</p>
-        )}
       </Card>
     </motion.div>
   );
