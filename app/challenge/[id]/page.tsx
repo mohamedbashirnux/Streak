@@ -186,6 +186,17 @@ export default function ChallengeDetailPage() {
                   {format(new Date(challenge.startDate), "MMM d, yyyy")}
                 </span>
               </div>
+              {challenge.status === "active" && (
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Will end on:</span>
+                  <span className="text-blue-500 font-medium">
+                    {format(
+                      new Date(new Date(challenge.startDate).getTime() + (challenge.duration - 1) * 24 * 60 * 60 * 1000),
+                      "MMM d, yyyy"
+                    )}
+                  </span>
+                </div>
+              )}
               {challenge.completedAt && (
                 <div className="flex justify-between">
                   <span className="text-gray-400">Completed:</span>
