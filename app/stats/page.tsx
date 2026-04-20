@@ -7,7 +7,7 @@ import Navbar from "@/components/layout/Navbar";
 import Card from "@/components/ui/Card";
 import { Stats } from "@/types";
 import { Loader2, Trophy, Target, XCircle, Flame, Calendar } from "lucide-react";
-import { badges } from "@/lib/utils";
+import { badges, getRarityColor, getRarityLabel } from "@/lib/utils";
 import toast from "react-hot-toast";
 
 export default function StatsPage() {
@@ -146,17 +146,23 @@ export default function StatsPage() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-bold text-white mb-6">Badges</h2>
-              
+              <h2 className="text-2xl font-bold text-white mb-6">🏅 Badges</h2>
+
               {earnedBadges.length > 0 && (
                 <div className="mb-8">
-                  <h3 className="text-lg font-semibold text-green-500 mb-4">Earned</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                  <h3 className="text-lg font-semibold text-green-500 mb-4">Earned ({earnedBadges.length})</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {earnedBadges.map((badge) => (
-                      <Card key={badge.id} className="text-center border-green-500/20">
+                      <Card key={badge.id} className="text-center" style={{ borderColor: getRarityColor(badge.rarity) + "40" }}>
                         <div className="text-4xl mb-2">{badge.icon}</div>
-                        <p className="font-bold text-white">{badge.name}</p>
+                        <p className="font-bold text-white text-sm">{badge.name}</p>
                         <p className="text-xs text-gray-400 mt-1">{badge.description}</p>
+                        <span
+                          className="inline-block mt-2 text-xs font-semibold px-2 py-0.5 rounded-full"
+                          style={{ color: getRarityColor(badge.rarity), backgroundColor: getRarityColor(badge.rarity) + "20" }}
+                        >
+                          {getRarityLabel(badge.rarity)}
+                        </span>
                       </Card>
                     ))}
                   </div>
@@ -165,13 +171,16 @@ export default function StatsPage() {
 
               {lockedBadges.length > 0 && (
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-400 mb-4">Locked</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                  <h3 className="text-lg font-semibold text-gray-500 mb-4">Locked ({lockedBadges.length})</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {lockedBadges.map((badge) => (
-                      <Card key={badge.id} className="text-center opacity-40">
+                      <Card key={badge.id} className="text-center opacity-35">
                         <div className="text-4xl mb-2 grayscale">{badge.icon}</div>
-                        <p className="font-bold text-gray-400">{badge.name}</p>
+                        <p className="font-bold text-gray-400 text-sm">{badge.name}</p>
                         <p className="text-xs text-gray-500 mt-1">{badge.description}</p>
+                        <span className="inline-block mt-2 text-xs font-semibold px-2 py-0.5 rounded-full text-gray-500 bg-gray-500/10">
+                          {getRarityLabel(badge.rarity)}
+                        </span>
                       </Card>
                     ))}
                   </div>
