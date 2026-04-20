@@ -9,5 +9,7 @@
   "then": {
     "type": "runCommand",
     "command": "git add -A && git diff --cached --quiet || git commit -m \"Auto: update project files\" && git push origin main"
-  }
+  },
+  "workspaceFolderName": "streak",
+  "shortName": "auto-git-push"
 }
