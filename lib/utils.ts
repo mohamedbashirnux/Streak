@@ -23,11 +23,11 @@ export function getRandomQuote(): string {
 }
 
 export const badges = [
-  { id: "first-blood", name: "First Blood", description: "Complete Day 1", icon: "🔥", streak: 1 },
-  { id: "one-week", name: "One Week Strong", description: "7 day streak", icon: "💪", streak: 7 },
-  { id: "21-warrior", name: "21 Day Warrior", description: "21 day streak", icon: "🏆", streak: 21 },
-  { id: "30-champion", name: "30 Day Champion", description: "30 day streak", icon: "👑", streak: 30 },
-  { id: "unbreakable", name: "Unbreakable", description: "Complete a 90 day challenge", icon: "💎", streak: 90 },
+  { id: "first-blood", name: "First Blood", description: "Complete your first day", icon: "🔥", streak: 1 },
+  { id: "one-week", name: "One Week Strong", description: "Maintain a 7-day streak", icon: "💪", streak: 7 },
+  { id: "21-warrior", name: "21 Day Warrior", description: "Achieve a 21-day streak", icon: "🏆", streak: 21 },
+  { id: "30-champion", name: "30 Day Champion", description: "Reach a 30-day streak", icon: "👑", streak: 30 },
+  { id: "unbreakable", name: "Unbreakable", description: "Complete a 90-day challenge", icon: "💎", streak: 90 },
 ];
 
 export function checkBadgeEarned(streak: number, duration: number): string | null {
