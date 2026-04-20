@@ -76,11 +76,6 @@ export default function NewCategoryPage() {
       return;
     }
 
-    if (habits.length === 0) {
-      toast.error("Add at least one habit");
-      return;
-    }
-
     const finalDuration = duration === 0 ? parseInt(customDuration) : duration;
 
     if (!finalDuration || finalDuration < 7) {
@@ -103,7 +98,7 @@ export default function NewCategoryPage() {
       });
 
       if (res.ok) {
-        toast.success("Category created! Your transformation begins now 🔥");
+        toast.success("Category created! Add habits to start your transformation 🔥");
         router.push("/dashboard");
       } else {
         const data = await res.json();
@@ -122,7 +117,7 @@ export default function NewCategoryPage() {
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">Create Category</h1>
-          <p className="text-gray-400">Group connected habits to transform your life</p>
+          <p className="text-gray-400">Group connected habits to transform your life (habits can be added later)</p>
         </div>
 
         <div className="space-y-8">
@@ -193,7 +188,7 @@ export default function NewCategoryPage() {
 
           {/* Add Habit */}
           <Card>
-            <h2 className="text-xl font-bold text-white mb-4">Add Habit</h2>
+            <h2 className="text-xl font-bold text-white mb-4">Add Habits (Optional)</h2>
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>

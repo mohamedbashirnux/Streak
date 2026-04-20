@@ -10,7 +10,7 @@ import Button from "@/components/ui/Button";
 import ProgressBar from "@/components/challenge/ProgressBar";
 import { 
   Loader2, Folder, Flame, Calendar, Target, Ban, 
-  CheckCircle, XCircle, Clock, Trash2, ArrowLeft 
+  CheckCircle, XCircle, Clock, Trash2, ArrowLeft, Plus 
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { Category, HabitProgress } from "@/types";
@@ -317,37 +317,63 @@ export default function CategoryDetailPage() {
           </div>
 
           <div className="space-y-4 mb-6">
-            {category.habits.map((habit) => {
-              const progress = habitProgress.find(h => h.habitId === habit.id);
-              const completed = progress?.completed || false;
+            {category.habits.length > 0 ? (
+              category.habits.map((habit) => {
+                const progress = habitProgress.find(h => h.habitId === habit.id);
+                const completed = progress?.completed || false;
 
-              return (
-                <div
-                  key={habit.id}
-                  className={`p-4 rounded-lg border transition-all cursor-pointer ${
-                    completed 
-                      ? "bg-green-500/10 border-green-500/30" 
-                      : "bg-gray-800/50 border-gray-700 hover:border-gray-600"
-                  } ${!canCheckIn ? "opacity-50 cursor-not-allowed" : ""}`}
-                  onClick={() => canCheckIn && toggleHabit(habit.id)}
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="text-2xl">{habit.icon}</div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-semibold text-white">{habit.name}</h3>
-                        {habit.type === "build" ? (
-                          <Target className="text-green-500" size={16} />
-                        ) : (
-                          <Ban className="text-red-500" size={16} />
+                return (
+                  <div
+                    key={habit.id}
+                    className={`p-4 rounded-lg border transition-all cursor-pointer ${
+                      completed 
+                        ? "bg-green-500/10 border-green-500/30" 
+                        : "bg-gray-800/50 border-gray-700 hover:border-gray-600"
+                    } ${!canCheckIn ? "opacity-50 cursor-not-allowed" : ""}`}
+                    onClick={() => canCheckIn && toggleHabit(habit.id)}
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="text-2xl">{habit.icon}</div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="font-semibold text-white">{habit.name}</h3>
+                          {habit.type === "build" ? (
+                            <Target className="text-green-500" size={16} />
+                          ) : (
+                            <Ban className="text-red-500" size={16} />
+                          )}
+                        </div>
+                        {habit.description && (
+                          <p className="text-sm text-gray-400">{habit.description}</p>
                         )}
                       </div>
-                      {habit.description && (
-                        <p className="text-sm text-gray-400">{habit.description}</p>
-                      )}
+                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                        completed 
+                          ? "bg-green-500 border-green-500" 
+                          : "border-gray-600"
+                      }`}>
+                        {completed && <CheckCircle className="text-white" size={16} />}
+                      </div>
                     </div>
-                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                      completed 
+                  </div>
+                );
+              })
+            ) : (
+              <div className="text-center py-8">
+                <div className="text-gray-500 mb-4">
+                  <Plus className="mx-auto mb-2" size={48} />
+                  <h3 className="text-lg font-semibold">No habits added yet</h3>
+                  <p className="text-sm">Add habits to start tracking your transformation</p>
+                </div>
+                <Button
+                  onClick={() => router.push(`/category/${id}/edit`)}
+                  className="bg-purple-500 hover:bg-purple-600 flex items-center gap-2 mx-auto"
+                >
+                  <Plus size={16} />
+                  Add Habits
+                </Button>
+              </div>
+            )} 
                         ? "bg-green-500 border-green-500" 
                         : "border-gray-600"
                     }`}>
@@ -359,7 +385,7 @@ export default function CategoryDetailPage() {
             })}
           </div>
 
-          {canCheckIn && (
+          {canCheckIn && category.habits.length > 0 && (
             <div className="flex items-center justify-between">
               <div className="text-sm text-gray-400">
                 {completedHabits}/{category.habits.length} habits completed

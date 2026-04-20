@@ -69,39 +69,45 @@ export default function CategoryCard({ category }: CategoryCardProps) {
           <div className="flex items-center gap-2 mb-2">
             <span className="text-sm text-gray-400">Today's Progress</span>
             <span className="text-sm text-white font-medium">
-              {completedHabits}/{totalHabits}
+              {category.habits.length > 0 ? `${completedHabits}/${totalHabits}` : "No habits"}
             </span>
           </div>
-          <div className="flex flex-wrap gap-2">
-            {category.habits.slice(0, 4).map((habit) => {
-              const habitProgress = todayProgress?.habits.find(h => h.habitId === habit.id);
-              const completed = habitProgress?.completed || false;
-              
-              return (
-                <div
-                  key={habit.id}
-                  className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs ${
-                    completed 
-                      ? "bg-purple-500/20 text-purple-400" 
-                      : "bg-gray-800 text-gray-400"
-                  }`}
-                >
-                  <span>{habit.icon}</span>
-                  <span className="truncate max-w-20">{habit.name}</span>
-                  {habit.type === "build" ? (
-                    <Target size={12} />
-                  ) : (
-                    <Ban size={12} />
-                  )}
+          {category.habits.length > 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {category.habits.slice(0, 4).map((habit) => {
+                const habitProgress = todayProgress?.habits.find(h => h.habitId === habit.id);
+                const completed = habitProgress?.completed || false;
+                
+                return (
+                  <div
+                    key={habit.id}
+                    className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs ${
+                      completed 
+                        ? "bg-purple-500/20 text-purple-400" 
+                        : "bg-gray-800 text-gray-400"
+                    }`}
+                  >
+                    <span>{habit.icon}</span>
+                    <span className="truncate max-w-20">{habit.name}</span>
+                    {habit.type === "build" ? (
+                      <Target size={12} />
+                    ) : (
+                      <Ban size={12} />
+                    )}
+                  </div>
+                );
+              })}
+              {category.habits.length > 4 && (
+                <div className="px-2 py-1 rounded-full text-xs bg-gray-800 text-gray-400">
+                  +{category.habits.length - 4} more
                 </div>
-              );
-            })}
-            {category.habits.length > 4 && (
-              <div className="px-2 py-1 rounded-full text-xs bg-gray-800 text-gray-400">
-                +{category.habits.length - 4} more
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          ) : (
+            <div className="text-sm text-gray-500 italic">
+              No habits added yet - click to add habits
+            </div>
+          )}
         </div>
 
         <div className="space-y-3 mb-4">

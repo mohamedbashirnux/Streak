@@ -63,7 +63,8 @@ export async function POST(
     category.days[todayIndex].habits = habitProgress;
     
     // Check if ALL habits are completed (day won)
-    const allCompleted = habitProgress.every((h: any) => h.completed === true);
+    // If no habits exist, consider it a won day (empty category)
+    const allCompleted = category.habits.length === 0 ? true : habitProgress.every((h: any) => h.completed === true);
     category.days[todayIndex].dayWon = allCompleted;
     category.days[todayIndex].status = allCompleted ? "won" : "lost";
 
