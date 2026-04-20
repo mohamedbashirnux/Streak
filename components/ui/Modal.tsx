@@ -34,18 +34,16 @@ export default function Modal({ isOpen, onClose, title, children, className }: M
       />
       <div
         className={cn(
-          "relative rounded-xl border p-6 max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto",
+          "relative bg-[#111111] rounded-xl border border-gray-800 p-6 max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto",
           className
         )}
-        style={{ backgroundColor: "var(--bg-surface)", borderColor: "var(--border)" }}
       >
         {title && (
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>{title}</h2>
+            <h2 className="text-2xl font-bold text-white">{title}</h2>
             <button
               onClick={onClose}
-              style={{ color: "var(--text-secondary)" }}
-              className="hover:opacity-80 transition-opacity"
+              className="text-gray-400 hover:text-white transition-colors"
             >
               <X size={24} />
             </button>

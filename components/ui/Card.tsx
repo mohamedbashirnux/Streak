@@ -9,13 +9,9 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
       <div
         ref={ref}
         className={cn(
-          "rounded-xl p-6 border transition-all duration-200",
+          "bg-[#111111] rounded-xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-200",
           className
         )}
-        style={{
-          backgroundColor: "var(--bg-surface)",
-          borderColor: "var(--border)",
-        }}
         {...props}
       >
         {children}

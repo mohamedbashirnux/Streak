@@ -63,7 +63,7 @@ export default function StatsPage() {
     <div className="min-h-screen">
       <Navbar />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-3xl font-bold mb-8" style={{ color: "var(--text-primary)" }}>Your Statistics</h1>
+        <h1 className="text-3xl font-bold text-white mb-8">Your Statistics</h1>
 
         {loading ? (
           <div className="flex justify-center py-12">
@@ -78,8 +78,8 @@ export default function StatsPage() {
                     <Target className="text-blue-500" size={24} />
                   </div>
                   <div>
-                    <p className="text-sm" style={{ color: "var(--text-secondary)" }}>Total Challenges</p>
-                    <p className="text-3xl font-bold" style={{ color: "var(--text-primary)" }}>{stats?.totalChallenges || 0}</p>
+                    <p className="text-gray-400 text-sm">Total Challenges</p>
+                    <p className="text-3xl font-bold text-white">{stats?.totalChallenges || 0}</p>
                   </div>
                 </div>
               </Card>
@@ -90,8 +90,8 @@ export default function StatsPage() {
                     <Trophy className="text-green-500" size={24} />
                   </div>
                   <div>
-                    <p className="text-sm" style={{ color: "var(--text-secondary)" }}>Completed</p>
-                    <p className="text-3xl font-bold" style={{ color: "var(--text-primary)" }}>{stats?.totalCompleted || 0}</p>
+                    <p className="text-gray-400 text-sm">Completed</p>
+                    <p className="text-3xl font-bold text-white">{stats?.totalCompleted || 0}</p>
                   </div>
                 </div>
               </Card>
@@ -102,8 +102,8 @@ export default function StatsPage() {
                     <XCircle className="text-red-500" size={24} />
                   </div>
                   <div>
-                    <p className="text-sm" style={{ color: "var(--text-secondary)" }}>Failed</p>
-                    <p className="text-3xl font-bold" style={{ color: "var(--text-primary)" }}>{stats?.totalFailed || 0}</p>
+                    <p className="text-gray-400 text-sm">Failed</p>
+                    <p className="text-3xl font-bold text-white">{stats?.totalFailed || 0}</p>
                   </div>
                 </div>
               </Card>
@@ -114,8 +114,8 @@ export default function StatsPage() {
                     <Flame className="text-orange-500" size={24} />
                   </div>
                   <div>
-                    <p className="text-sm" style={{ color: "var(--text-secondary)" }}>Longest Streak</p>
-                    <p className="text-3xl font-bold" style={{ color: "var(--text-primary)" }}>{stats?.longestStreakEver || 0}</p>
+                    <p className="text-gray-400 text-sm">Longest Streak</p>
+                    <p className="text-3xl font-bold text-white">{stats?.longestStreakEver || 0}</p>
                   </div>
                 </div>
               </Card>
@@ -126,8 +126,8 @@ export default function StatsPage() {
                     <Calendar className="text-purple-500" size={24} />
                   </div>
                   <div>
-                    <p className="text-sm" style={{ color: "var(--text-secondary)" }}>Total Days Completed</p>
-                    <p className="text-3xl font-bold" style={{ color: "var(--text-primary)" }}>{stats?.totalDaysCompleted || 0}</p>
+                    <p className="text-gray-400 text-sm">Total Days Completed</p>
+                    <p className="text-3xl font-bold text-white">{stats?.totalDaysCompleted || 0}</p>
                   </div>
                 </div>
               </Card>
@@ -138,15 +138,15 @@ export default function StatsPage() {
                     <Trophy className="text-green-500" size={24} />
                   </div>
                   <div>
-                    <p className="text-sm" style={{ color: "var(--text-secondary)" }}>Success Rate</p>
-                    <p className="text-3xl font-bold" style={{ color: "var(--text-primary)" }}>{successRate}%</p>
+                    <p className="text-gray-400 text-sm">Success Rate</p>
+                    <p className="text-3xl font-bold text-white">{successRate}%</p>
                   </div>
                 </div>
               </Card>
             </div>
 
             <div>
-              <h2 className="text-2xl font-bold mb-6" style={{ color: "var(--text-primary)" }}>🏅 Badges</h2>
+              <h2 className="text-2xl font-bold text-white mb-6">🏅 Badges</h2>
 
               {earnedBadges.length > 0 && (
                 <div className="mb-8">
@@ -155,8 +155,8 @@ export default function StatsPage() {
                     {earnedBadges.map((badge) => (
                       <Card key={badge.id} className="text-center" style={{ borderColor: getRarityColor(badge.rarity) + "40" }}>
                         <div className="text-4xl mb-2">{badge.icon}</div>
-                        <p className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>{badge.name}</p>
-                        <p className="text-xs mt-1" style={{ color: "var(--text-secondary)" }}>{badge.description}</p>
+                        <p className="font-bold text-white text-sm">{badge.name}</p>
+                        <p className="text-xs text-gray-400 mt-1">{badge.description}</p>
                         <span
                           className="inline-block mt-2 text-xs font-semibold px-2 py-0.5 rounded-full"
                           style={{ color: getRarityColor(badge.rarity), backgroundColor: getRarityColor(badge.rarity) + "20" }}
@@ -176,9 +176,9 @@ export default function StatsPage() {
                     {lockedBadges.map((badge) => (
                       <Card key={badge.id} className="text-center opacity-35">
                         <div className="text-4xl mb-2 grayscale">{badge.icon}</div>
-                        <p className="font-bold text-sm" style={{ color: "var(--text-muted)" }}>{badge.name}</p>
-                        <p className="text-xs mt-1" style={{ color: "var(--text-muted)" }}>{badge.description}</p>
-                        <span className="inline-block mt-2 text-xs font-semibold px-2 py-0.5 rounded-full" style={{ color: "var(--text-muted)", backgroundColor: "var(--text-muted)" + "20" }}>
+                        <p className="font-bold text-gray-400 text-sm">{badge.name}</p>
+                        <p className="text-xs text-gray-500 mt-1">{badge.description}</p>
+                        <span className="inline-block mt-2 text-xs font-semibold px-2 py-0.5 rounded-full text-gray-500 bg-gray-500/10">
                           {getRarityLabel(badge.rarity)}
                         </span>
                       </Card>
