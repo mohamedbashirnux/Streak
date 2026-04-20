@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import connectDB from "@/lib/mongodb";
 import ChallengeModel from "@/models/Challenge";
-import LifeChapterModel from "@/models/LifeChapter";
+import CategoryModel from "@/models/Category";
 import StatsModel from "@/models/Stats";
 import UserModel from "@/models/User";
 
@@ -20,8 +20,8 @@ export async function POST(req: NextRequest) {
     // Delete all challenges for this user
     await ChallengeModel.deleteMany({ userId: session.user.id });
 
-    // Delete all life chapters for this user
-    await LifeChapterModel.deleteMany({ userId: session.user.id });
+    // Delete all categories for this user
+    await CategoryModel.deleteMany({ userId: session.user.id });
 
     // Reset stats to zero
     await StatsModel.findOneAndUpdate(
@@ -32,8 +32,8 @@ export async function POST(req: NextRequest) {
         totalFailed: 0,
         longestStreakEver: 0,
         totalDaysCompleted: 0,
-        totalLifeChapters: 0,
-        totalChaptersCompleted: 0,
+        totalCategories: 0,
+        totalCategoriesCompleted: 0,
         totalPerfectDays: 0,
       },
       { upsert: true }
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({
-      message: "All challenges, life chapters, stats, and badges cleared successfully!",
+      message: "All challenges, categories, stats, and badges cleared successfully!",
     });
   } catch (error) {
     console.error("Reset error:", error);

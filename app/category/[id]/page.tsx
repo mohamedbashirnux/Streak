@@ -9,20 +9,20 @@ import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import ProgressBar from "@/components/challenge/ProgressBar";
 import { 
-  Loader2, Crown, Flame, Calendar, Target, Ban, 
+  Loader2, Folder, Flame, Calendar, Target, Ban, 
   CheckCircle, XCircle, Clock, Trash2, ArrowLeft 
 } from "lucide-react";
 import toast from "react-hot-toast";
-import { LifeChapter, HabitProgress } from "@/types";
+import { Category, HabitProgress } from "@/types";
 import { format } from "date-fns";
 
-export default function LifeChapterDetailPage() {
+export default function CategoryDetailPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const params = useParams();
   const id = params.id as string;
 
-  const [chapter, setChapter] = useState<LifeChapter | null>(null);
+  const [category, setCategory] = useState<Category | null>(null);
   const [loading, setLoading] = useState(true);
   const [checkingIn, setCheckingIn] = useState(false);
   const [habitProgress, setHabitProgress] = useState<HabitProgress[]>([]);
@@ -35,17 +35,17 @@ export default function LifeChapterDetailPage() {
 
   useEffect(() => {
     if (session?.user?.id && id) {
-      fetchChapter();
+      fetchCategory();
     }
   }, [session, id]);
 
-  const fetchChapter = async () => {
+  const fetchCategory = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/life-chapters/${id}`);
+      const res = await fetch(`/api/categories/${id}`);
       if (res.ok) {
         const data = await res.json();
-        setChapter(data);
+        setCategory(data);
         
         // Initialize today's progress
         const today = new Date();
@@ -67,11 +67,11 @@ export default function LifeChapterDetailPage() {
           })));
         }
       } else {
-        toast.error("Life chapter not found");
+        toast.error("Category not found");
         router.push("/dashboard");
       }
     } catch (error) {
-      toast.error("Failed to load life chapter");
+      toast.error("Failed to load category");
     } finally {
       setLoading(false);
     }
@@ -88,11 +88,11 @@ export default function LifeChapterDetailPage() {
   };
 
   const handleCheckIn = async () => {
-    if (!chapter) return;
+    if (!category) return;
 
     setCheckingIn(true);
     try {
-      const res = await fetch(`/api/life-chapters/${id}/checkin`, {
+      const res = await fetch(`/api/categories/${id}/checkin`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ habitProgress }),
@@ -101,7 +101,7 @@ export default function LifeChapterDetailPage() {
       const data = await res.json();
 
       if (res.ok) {
-        setChapter(data.chapter);
+        setCategory(data.category);
         toast.success(data.message);
         
         if (data.earnedBadge) {
@@ -111,10 +111,10 @@ export default function LifeChapterDetailPage() {
         // Celebrate milestones
         if (data.dayWon) {
           const milestones = [7, 21, 30, 60, 90, 180, 365];
-          if (milestones.includes(data.chapter.currentStreak)) {
-            toast(`🎉 ${data.chapter.currentStreak} day milestone! You're transforming!`, {
+          if (milestones.includes(data.category.currentStreak)) {
+            toast(`🎉 ${data.category.currentStreak} day milestone! You're transforming!`, {
               duration: 5000,
-              icon: "👑",
+              icon: "📁",
               style: { background: "#7c3aed", color: "#fff", border: "1px solid #a855f7" },
             });
           }
@@ -129,21 +129,21 @@ export default function LifeChapterDetailPage() {
     }
   };
 
-  const deleteChapter = async () => {
-    if (!confirm("Are you sure you want to delete this Life Chapter? This action cannot be undone.")) {
+  const deleteCategory = async () => {
+    if (!confirm("Are you sure you want to delete this Category? This action cannot be undone.")) {
       return;
     }
 
     try {
-      const res = await fetch(`/api/life-chapters/${id}`, {
+      const res = await fetch(`/api/categories/${id}`, {
         method: "DELETE",
       });
 
       if (res.ok) {
-        toast.success("Life Chapter deleted");
+        toast.success("Category deleted");
         router.push("/dashboard");
       } else {
-        toast.error("Failed to delete Life Chapter");
+        toast.error("Failed to delete Category");
       }
     } catch (error) {
       toast.error("Something went wrong");
@@ -158,14 +158,14 @@ export default function LifeChapterDetailPage() {
     );
   }
 
-  if (!session || !chapter) {
+  if (!session || !category) {
     return null;
   }
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const todayProgress = chapter.days.find((day) => {
+  const todayProgress = category.days.find((day) => {
     const dayDate = new Date(day.date);
     dayDate.setHours(0, 0, 0, 0);
     return dayDate.getTime() === today.getTime();
@@ -174,7 +174,7 @@ export default function LifeChapterDetailPage() {
   const canCheckIn = todayProgress && todayProgress.status === "pending";
   const wonToday = todayProgress?.dayWon || false;
   const completedHabits = habitProgress.filter(h => h.completed).length;
-  const allCompleted = completedHabits === chapter.habits.length;
+  const allCompleted = completedHabits === category.habits.length;
 
   return (
     <div className="min-h-screen">
@@ -192,16 +192,16 @@ export default function LifeChapterDetailPage() {
           </Button>
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
-              <Crown className="text-purple-500" size={32} />
-              <h1 className="text-3xl font-bold text-white">{chapter.title}</h1>
+              <Folder className="text-purple-500" size={32} />
+              <h1 className="text-3xl font-bold text-white">{category.title}</h1>
             </div>
-            {chapter.description && (
-              <p className="text-gray-400">{chapter.description}</p>
+            {category.description && (
+              <p className="text-gray-400">{category.description}</p>
             )}
           </div>
           <Button
             variant="danger"
-            onClick={deleteChapter}
+            onClick={deleteCategory}
             className="flex items-center gap-2"
           >
             <Trash2 size={16} />
@@ -218,7 +218,7 @@ export default function LifeChapterDetailPage() {
               </div>
               <div>
                 <p className="text-gray-400 text-sm">Current Streak</p>
-                <p className="text-2xl font-bold text-white">{chapter.currentStreak}</p>
+                <p className="text-2xl font-bold text-white">{category.currentStreak}</p>
               </div>
             </div>
           </Card>
@@ -226,11 +226,11 @@ export default function LifeChapterDetailPage() {
           <Card>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-purple-500/10 rounded-full flex items-center justify-center">
-                <Crown className="text-purple-500" size={20} />
+                <Folder className="text-purple-500" size={20} />
               </div>
               <div>
                 <p className="text-gray-400 text-sm">Longest Streak</p>
-                <p className="text-2xl font-bold text-white">{chapter.longestStreak}</p>
+                <p className="text-2xl font-bold text-white">{category.longestStreak}</p>
               </div>
             </div>
           </Card>
@@ -242,7 +242,7 @@ export default function LifeChapterDetailPage() {
               </div>
               <div>
                 <p className="text-gray-400 text-sm">Days Won</p>
-                <p className="text-2xl font-bold text-white">{chapter.totalDaysWon}</p>
+                <p className="text-2xl font-bold text-white">{category.totalDaysWon}</p>
               </div>
             </div>
           </Card>
@@ -254,7 +254,7 @@ export default function LifeChapterDetailPage() {
               </div>
               <div>
                 <p className="text-gray-400 text-sm">Days Lost</p>
-                <p className="text-2xl font-bold text-white">{chapter.totalDaysLost}</p>
+                <p className="text-2xl font-bold text-white">{category.totalDaysLost}</p>
               </div>
             </div>
           </Card>
@@ -270,14 +270,14 @@ export default function LifeChapterDetailPage() {
             <div className="flex justify-between text-sm">
               <span className="text-gray-400">Overall Progress</span>
               <span className="text-white font-medium">
-                Day {chapter.currentStreak} of {chapter.duration}
+                Day {category.currentStreak} of {category.duration}
               </span>
             </div>
-            <ProgressBar current={chapter.currentStreak} total={chapter.duration} />
+            <ProgressBar current={category.currentStreak} total={category.duration} />
             <div className="flex justify-between text-sm">
               <span className="text-gray-400">Days remaining</span>
               <span className="text-purple-500 font-medium">
-                {chapter.duration - chapter.currentStreak}
+                {category.duration - category.currentStreak}
               </span>
             </div>
           </div>
@@ -317,7 +317,7 @@ export default function LifeChapterDetailPage() {
           </div>
 
           <div className="space-y-4 mb-6">
-            {chapter.habits.map((habit) => {
+            {category.habits.map((habit) => {
               const progress = habitProgress.find(h => h.habitId === habit.id);
               const completed = progress?.completed || false;
 
@@ -362,7 +362,7 @@ export default function LifeChapterDetailPage() {
           {canCheckIn && (
             <div className="flex items-center justify-between">
               <div className="text-sm text-gray-400">
-                {completedHabits}/{chapter.habits.length} habits completed
+                {completedHabits}/{category.habits.length} habits completed
                 {allCompleted && " - Ready to win the day! 🔥"}
               </div>
               <Button

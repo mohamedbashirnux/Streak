@@ -2,8 +2,8 @@ export type ChallengeType = "avoid" | "build";
 export type ChallengeStatus = "active" | "completed" | "failed";
 export type DayStatus = "success" | "failed" | "missed" | "pending";
 
-// ── LIFE CHAPTER TYPES ──────────────────────────
-export interface LifeHabit {
+// ── CATEGORY TYPES ──────────────────────────
+export interface CategoryHabit {
   id: string;
   name: string;
   description: string;
@@ -24,7 +24,7 @@ export interface DayProgress {
   status: "pending" | "won" | "lost";
 }
 
-export interface LifeChapter {
+export interface Category {
   _id: string;
   userId: string;
   title: string; // "My 2026 Transformation"
@@ -33,7 +33,7 @@ export interface LifeChapter {
   startDate: Date;
   endDate: Date;
   
-  habits: LifeHabit[]; // 4 connected habits
+  habits: CategoryHabit[]; // 4 connected habits
   days: DayProgress[]; // daily progress
   
   // Stats
@@ -89,9 +89,9 @@ export interface Stats {
   totalFailed: number;
   longestStreakEver: number;
   totalDaysCompleted: number;
-  // Life Chapter stats
-  totalLifeChapters?: number;
-  totalChaptersCompleted?: number;
+  // Category stats
+  totalCategories?: number;
+  totalCategoriesCompleted?: number;
   totalPerfectDays?: number;
 }
 

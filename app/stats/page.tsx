@@ -144,15 +144,15 @@ export default function StatsPage() {
                 </div>
               </Card>
 
-              {/* Life Chapter Stats */}
+              {/* Category Stats */}
               <Card>
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-purple-500/10 rounded-full flex items-center justify-center">
                     <Crown className="text-purple-500" size={24} />
                   </div>
                   <div>
-                    <p className="text-gray-400 text-sm">Life Chapters</p>
-                    <p className="text-3xl font-bold text-white">{stats?.totalLifeChapters || 0}</p>
+                    <p className="text-gray-400 text-sm">Categories</p>
+                    <p className="text-3xl font-bold text-white">{stats?.totalCategories || 0}</p>
                   </div>
                 </div>
               </Card>
@@ -163,8 +163,8 @@ export default function StatsPage() {
                     <Crown className="text-purple-500" size={24} />
                   </div>
                   <div>
-                    <p className="text-gray-400 text-sm">Chapters Completed</p>
-                    <p className="text-3xl font-bold text-white">{stats?.totalChaptersCompleted || 0}</p>
+                    <p className="text-gray-400 text-sm">Categories Completed</p>
+                    <p className="text-3xl font-bold text-white">{stats?.totalCategoriesCompleted || 0}</p>
                   </div>
                 </div>
               </Card>

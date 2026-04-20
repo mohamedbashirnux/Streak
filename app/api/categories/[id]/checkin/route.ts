@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import connectDB from "@/lib/mongodb";
-import LifeChapterModel from "@/models/LifeChapter";
+import CategoryModel from "@/models/Category";
 import StatsModel from "@/models/Stats";
 import UserModel from "@/models/User";
 import { checkBadgeEarned } from "@/lib/utils";
@@ -22,18 +22,18 @@ export async function POST(
     const { habitProgress } = await req.json(); // Array of { habitId, completed, notes? }
 
     await connectDB();
-    const chapter = await LifeChapterModel.findOne({
+    const category = await CategoryModel.findOne({
       _id: id,
       userId: session.user.id,
     });
 
-    if (!chapter) {
-      return NextResponse.json({ error: "Life chapter not found" }, { status: 404 });
+    if (!category) {
+      return NextResponse.json({ error: "Category not found" }, { status: 404 });
     }
 
-    if (chapter.status !== "active") {
+    if (category.status !== "active") {
       return NextResponse.json(
-        { error: "Life chapter is not active" },
+        { error: "Category is not active" },
         { status: 400 }
       );
     }
@@ -41,7 +41,7 @@ export async function POST(
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const todayIndex = chapter.days.findIndex(
+    const todayIndex = category.days.findIndex(
       (day) => new Date(day.date).getTime() === today.getTime()
     );
 
@@ -52,7 +52,7 @@ export async function POST(
       );
     }
 
-    if (chapter.days[todayIndex].status !== "pending") {
+    if (category.days[todayIndex].status !== "pending") {
       return NextResponse.json(
         { error: "Already checked in today" },
         { status: 400 }
@@ -60,37 +60,37 @@ export async function POST(
     }
 
     // Update today's progress
-    chapter.days[todayIndex].habits = habitProgress;
+    category.days[todayIndex].habits = habitProgress;
     
     // Check if ALL habits are completed (day won)
     const allCompleted = habitProgress.every((h: any) => h.completed === true);
-    chapter.days[todayIndex].dayWon = allCompleted;
-    chapter.days[todayIndex].status = allCompleted ? "won" : "lost";
+    category.days[todayIndex].dayWon = allCompleted;
+    category.days[todayIndex].status = allCompleted ? "won" : "lost";
 
-    let newStreak = chapter.currentStreak;
-    let newStatus = chapter.status;
-    let completedAt = chapter.completedAt;
+    let newStreak = category.currentStreak;
+    let newStatus = category.status;
+    let completedAt = category.completedAt;
     let earnedBadge: string | null = null;
 
     if (allCompleted) {
       // Day won - continue streak
       newStreak += 1;
-      chapter.totalDaysWon += 1;
+      category.totalDaysWon += 1;
 
-      if (newStreak > chapter.longestStreak) {
-        chapter.longestStreak = newStreak;
+      if (newStreak > category.longestStreak) {
+        category.longestStreak = newStreak;
       }
 
       // Check for badge
-      earnedBadge = checkBadgeEarned(newStreak, chapter.duration);
+      earnedBadge = checkBadgeEarned(newStreak, category.duration);
       if (earnedBadge) {
         await UserModel.findByIdAndUpdate(session.user.id, {
           $addToSet: { badges: earnedBadge },
         });
       }
 
-      // Check if chapter completed
-      if (newStreak === chapter.duration) {
+      // Check if category completed
+      if (newStreak === category.duration) {
         newStatus = "completed";
         completedAt = new Date();
         
@@ -98,8 +98,8 @@ export async function POST(
           { userId: session.user.id },
           {
             $inc: {
-              totalChaptersCompleted: 1,
-              totalPerfectDays: chapter.totalDaysWon,
+              totalCategoriesCompleted: 1,
+              totalPerfectDays: category.totalDaysWon,
             },
           },
           { upsert: true }
@@ -108,14 +108,14 @@ export async function POST(
     } else {
       // Day lost - reset streak
       newStreak = 0;
-      chapter.totalDaysLost += 1;
+      category.totalDaysLost += 1;
     }
 
-    chapter.currentStreak = newStreak;
-    chapter.status = newStatus;
-    chapter.completedAt = completedAt;
+    category.currentStreak = newStreak;
+    category.status = newStatus;
+    category.completedAt = completedAt;
 
-    await chapter.save();
+    await category.save();
 
     // Update stats
     await StatsModel.findOneAndUpdate(
@@ -128,17 +128,17 @@ export async function POST(
     );
 
     return NextResponse.json({
-      chapter,
+      category,
       earnedBadge,
       dayWon: allCompleted,
       message: allCompleted
         ? newStatus === "completed"
-          ? "🎉 Life Chapter completed! You transformed yourself!"
+          ? "🎉 Category completed! You transformed yourself!"
           : "🔥 Perfect day! All habits completed!"
         : "💪 Keep going! Tomorrow is a new chance to win the day.",
     });
   } catch (error) {
-    console.error("Life chapter check-in error:", error);
+    console.error("Category check-in error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

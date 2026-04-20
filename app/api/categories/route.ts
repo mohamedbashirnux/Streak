@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import connectDB from "@/lib/mongodb";
-import LifeChapterModel from "@/models/LifeChapter";
+import CategoryModel from "@/models/Category";
 
 export const runtime = "nodejs";
 
-// GET - Get all life chapters for user
+// GET - Get all categories for user
 export async function GET() {
   try {
     const session = await auth();
@@ -14,16 +14,16 @@ export async function GET() {
     }
 
     await connectDB();
-    const chapters = await LifeChapterModel.find({ userId: session.user.id }).sort({ createdAt: -1 });
+    const categories = await CategoryModel.find({ userId: session.user.id }).sort({ createdAt: -1 });
 
-    return NextResponse.json(chapters);
+    return NextResponse.json(categories);
   } catch (error) {
-    console.error("Get life chapters error:", error);
+    console.error("Get categories error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
 
-// POST - Create new life chapter
+// POST - Create new category
 export async function POST(req: NextRequest) {
   try {
     const session = await auth();
@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    const chapter = new LifeChapterModel({
+    const category = new CategoryModel({
       userId: session.user.id,
       title,
       description: description || "",
@@ -78,11 +78,11 @@ export async function POST(req: NextRequest) {
       status: "active",
     });
 
-    await chapter.save();
+    await category.save();
 
-    return NextResponse.json(chapter, { status: 201 });
+    return NextResponse.json(category, { status: 201 });
   } catch (error) {
-    console.error("Create life chapter error:", error);
+    console.error("Create category error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

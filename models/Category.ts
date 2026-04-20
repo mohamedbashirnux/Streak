@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document, ObjectId } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface IHabit {
   id: string;
@@ -19,7 +19,7 @@ export interface IDayProgress {
   status: "pending" | "won" | "lost";
 }
 
-export interface ILifeChapter extends Document {
+export interface ICategory extends Document {
   userId: string;
   title: string; // "My 2026 Transformation"
   description: string; // "Become the person I want to be"
@@ -63,7 +63,7 @@ const DayProgressSchema = new Schema({
   status: { type: String, enum: ["pending", "won", "lost"], required: true },
 });
 
-const LifeChapterSchema = new Schema<ILifeChapter>({
+const CategorySchema = new Schema<ICategory>({
   userId: { type: String, required: true },
   title: { type: String, required: true },
   description: { type: String, required: true },
@@ -85,4 +85,4 @@ const LifeChapterSchema = new Schema<ILifeChapter>({
   timestamps: true,
 });
 
-export default mongoose.models.LifeChapter || mongoose.model<ILifeChapter>("LifeChapter", LifeChapterSchema);
+export default mongoose.models.Category || mongoose.model<ICategory>("Category", CategorySchema);

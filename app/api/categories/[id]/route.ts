@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import connectDB from "@/lib/mongodb";
-import LifeChapterModel from "@/models/LifeChapter";
+import CategoryModel from "@/models/Category";
 
 export const runtime = "nodejs";
 
-// GET - Get specific life chapter
+// GET - Get specific category
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -19,23 +19,23 @@ export async function GET(
     const { id } = await params;
 
     await connectDB();
-    const chapter = await LifeChapterModel.findOne({
+    const category = await CategoryModel.findOne({
       _id: id,
       userId: session.user.id,
     });
 
-    if (!chapter) {
-      return NextResponse.json({ error: "Life chapter not found" }, { status: 404 });
+    if (!category) {
+      return NextResponse.json({ error: "Category not found" }, { status: 404 });
     }
 
-    return NextResponse.json(chapter);
+    return NextResponse.json(category);
   } catch (error) {
-    console.error("Get life chapter error:", error);
+    console.error("Get category error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
 
-// DELETE - Delete life chapter
+// DELETE - Delete category
 export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -49,18 +49,18 @@ export async function DELETE(
     const { id } = await params;
 
     await connectDB();
-    const chapter = await LifeChapterModel.findOneAndDelete({
+    const category = await CategoryModel.findOneAndDelete({
       _id: id,
       userId: session.user.id,
     });
 
-    if (!chapter) {
-      return NextResponse.json({ error: "Life chapter not found" }, { status: 404 });
+    if (!category) {
+      return NextResponse.json({ error: "Category not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ message: "Life chapter deleted successfully" });
+    return NextResponse.json({ message: "Category deleted successfully" });
   } catch (error) {
-    console.error("Delete life chapter error:", error);
+    console.error("Delete category error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

@@ -6,19 +6,19 @@ import { useRouter } from "next/navigation";
 import { useChallengeStore } from "@/store/challengeStore";
 import Navbar from "@/components/layout/Navbar";
 import ChallengeCard from "@/components/challenge/ChallengeCard";
-import LifeChapterCard from "@/components/life-chapter/LifeChapterCard";
+import CategoryCard from "@/components/category/CategoryCard";
 import MotivationalQuote from "@/components/dashboard/MotivationalQuote";
 import Button from "@/components/ui/Button";
-import { Plus, Loader2, Crown, Target } from "lucide-react";
+import { Plus, Loader2, Folder, Target } from "lucide-react";
 import toast from "react-hot-toast";
-import { LifeChapter } from "@/types";
+import { Category } from "@/types";
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { challenges, setChallenges, updateChallenge, loading, setLoading } = useChallengeStore();
-  const [lifeChapters, setLifeChapters] = useState<LifeChapter[]>([]);
-  const [chaptersLoading, setChaptersLoading] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -34,7 +34,7 @@ export default function DashboardPage() {
   useEffect(() => {
     if (session?.user?.id) {
       fetchChallenges();
-      fetchLifeChapters();
+      fetchCategories();
     }
   }, [session]);
 
@@ -53,18 +53,18 @@ export default function DashboardPage() {
     }
   };
 
-  const fetchLifeChapters = async () => {
-    setChaptersLoading(true);
+  const fetchCategories = async () => {
+    setCategoriesLoading(true);
     try {
-      const res = await fetch("/api/life-chapters");
+      const res = await fetch("/api/categories");
       if (res.ok) {
         const data = await res.json();
-        setLifeChapters(data);
+        setCategories(data);
       }
     } catch (error) {
-      toast.error("Failed to load life chapters");
+      toast.error("Failed to load categories");
     } finally {
-      setChaptersLoading(false);
+      setCategoriesLoading(false);
     }
   };
 
@@ -112,7 +112,7 @@ export default function DashboardPage() {
   }
 
   const activeChallenges = challenges.filter((c) => c.status === "active");
-  const activeLifeChapters = lifeChapters.filter((c) => c.status === "active");
+  const activeCategories = categories.filter((c) => c.status === "active");
 
   return (
     <div className="min-h-screen">
@@ -127,11 +127,11 @@ export default function DashboardPage() {
           </div>
           <div className="flex items-center gap-3">
             <Button 
-              onClick={() => router.push("/life-chapter/new")} 
+              onClick={() => router.push("/category/new")} 
               className="flex items-center gap-2 bg-purple-500 hover:bg-purple-600"
             >
-              <Crown size={20} />
-              New Life Chapter
+              <Folder size={20} />
+              New Category
             </Button>
             <Button onClick={() => router.push("/challenge/new")} className="flex items-center gap-2">
               <Target size={20} />
@@ -142,23 +142,23 @@ export default function DashboardPage() {
 
         <MotivationalQuote />
 
-        {/* Life Chapters Section */}
-        {(chaptersLoading || activeLifeChapters.length > 0) && (
+        {/* Categories Section */}
+        {(categoriesLoading || activeCategories.length > 0) && (
           <div className="mb-12">
             <div className="flex items-center gap-3 mb-6">
-              <Crown className="text-purple-500" size={24} />
-              <h2 className="text-2xl font-bold text-white">Life Chapters</h2>
-              <span className="text-sm text-gray-400">({activeLifeChapters.length})</span>
+              <Folder className="text-purple-500" size={24} />
+              <h2 className="text-2xl font-bold text-white">Categories</h2>
+              <span className="text-sm text-gray-400">({activeCategories.length})</span>
             </div>
             
-            {chaptersLoading ? (
+            {categoriesLoading ? (
               <div className="flex justify-center py-8">
                 <Loader2 className="animate-spin text-purple-500" size={32} />
               </div>
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                {activeLifeChapters.map((chapter) => (
-                  <LifeChapterCard key={chapter._id} chapter={chapter} />
+                {activeCategories.map((category) => (
+                  <CategoryCard key={category._id} category={category} />
                 ))}
               </div>
             )}
@@ -193,23 +193,23 @@ export default function DashboardPage() {
         )}
 
         {/* Empty State */}
-        {!loading && !chaptersLoading && activeLifeChapters.length === 0 && activeChallenges.length === 0 && (
+        {!loading && !categoriesLoading && activeCategories.length === 0 && activeChallenges.length === 0 && (
           <div className="text-center py-16">
             <div className="mb-6">
-              <Crown className="mx-auto text-purple-500 mb-4" size={64} />
+              <Folder className="mx-auto text-purple-500 mb-4" size={64} />
               <h3 className="text-2xl font-bold text-white mb-2">Start Your Transformation</h3>
               <p className="text-gray-400 text-lg mb-8 max-w-2xl mx-auto">
-                Create a Life Chapter to transform multiple areas of your life together, 
+                Create a Category to group connected habits together, 
                 or start with a single challenge to build one habit at a time.
               </p>
             </div>
             <div className="flex items-center justify-center gap-4">
               <Button 
-                onClick={() => router.push("/life-chapter/new")}
+                onClick={() => router.push("/category/new")}
                 className="bg-purple-500 hover:bg-purple-600 flex items-center gap-2"
               >
-                <Crown size={20} />
-                Create Life Chapter
+                <Folder size={20} />
+                Create Category
               </Button>
               <Button onClick={() => router.push("/challenge/new")} className="flex items-center gap-2">
                 <Target size={20} />
