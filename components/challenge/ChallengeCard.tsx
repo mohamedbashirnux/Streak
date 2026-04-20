@@ -6,6 +6,7 @@ import ProgressBar from "./ProgressBar";
 import CheckInButton from "./CheckInButton";
 import { motion } from "framer-motion";
 import { Flame, Target, Ban } from "lucide-react";
+import { format, isToday } from "date-fns";
 import { useRouter } from "next/navigation";
 
 interface ChallengeCardProps {
