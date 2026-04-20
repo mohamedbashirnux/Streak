@@ -89,7 +89,7 @@ export interface Stats {
   totalFailed: number;
   longestStreakEver: number;
   totalDaysCompleted: number;
-  // New stats for Life Chapters
+  // Life Chapter stats
   totalLifeChapters?: number;
   totalChaptersCompleted?: number;
   totalPerfectDays?: number;

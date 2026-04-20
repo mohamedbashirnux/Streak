@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import Card from "@/components/ui/Card";
 import { Stats } from "@/types";
-import { Loader2, Trophy, Target, XCircle, Flame, Calendar } from "lucide-react";
+import { Loader2, Trophy, Target, XCircle, Flame, Calendar, Crown, Star } from "lucide-react";
 import { badges, getRarityColor, getRarityLabel } from "@/lib/utils";
 import toast from "react-hot-toast";
 
@@ -140,6 +140,43 @@ export default function StatsPage() {
                   <div>
                     <p className="text-gray-400 text-sm">Success Rate</p>
                     <p className="text-3xl font-bold text-white">{successRate}%</p>
+                  </div>
+                </div>
+              </Card>
+
+              {/* Life Chapter Stats */}
+              <Card>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-purple-500/10 rounded-full flex items-center justify-center">
+                    <Crown className="text-purple-500" size={24} />
+                  </div>
+                  <div>
+                    <p className="text-gray-400 text-sm">Life Chapters</p>
+                    <p className="text-3xl font-bold text-white">{stats?.totalLifeChapters || 0}</p>
+                  </div>
+                </div>
+              </Card>
+
+              <Card>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-purple-500/10 rounded-full flex items-center justify-center">
+                    <Crown className="text-purple-500" size={24} />
+                  </div>
+                  <div>
+                    <p className="text-gray-400 text-sm">Chapters Completed</p>
+                    <p className="text-3xl font-bold text-white">{stats?.totalChaptersCompleted || 0}</p>
+                  </div>
+                </div>
+              </Card>
+
+              <Card>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-yellow-500/10 rounded-full flex items-center justify-center">
+                    <Star className="text-yellow-500" size={24} />
+                  </div>
+                  <div>
+                    <p className="text-gray-400 text-sm">Perfect Days</p>
+                    <p className="text-3xl font-bold text-white">{stats?.totalPerfectDays || 0}</p>
                   </div>
                 </div>
               </Card>
