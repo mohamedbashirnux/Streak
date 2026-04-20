@@ -3,7 +3,7 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface IHabit {
   id: string;
   name: string;
-  description: string;
+  description?: string;
   type: "build" | "avoid"; // build = do something, avoid = stop something
   icon: string;
 }
@@ -22,7 +22,7 @@ export interface IDayProgress {
 export interface ICategory extends Document {
   userId: string;
   title: string; // "My 2026 Transformation"
-  description: string; // "Become the person I want to be"
+  description?: string; // "Become the person I want to be"
   duration: number; // days (365 for 1 year)
   startDate: Date;
   endDate: Date;
@@ -47,7 +47,7 @@ export interface ICategory extends Document {
 const HabitSchema = new Schema({
   id: { type: String, required: true },
   name: { type: String, required: true },
-  description: { type: String, required: true },
+  description: { type: String, required: false },
   type: { type: String, enum: ["build", "avoid"], required: true },
   icon: { type: String, required: true },
 });
@@ -66,7 +66,7 @@ const DayProgressSchema = new Schema({
 const CategorySchema = new Schema<ICategory>({
   userId: { type: String, required: true },
   title: { type: String, required: true },
-  description: { type: String, required: true },
+  description: { type: String, required: false },
   duration: { type: Number, required: true },
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: true },

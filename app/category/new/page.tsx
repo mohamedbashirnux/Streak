@@ -91,7 +91,7 @@ export default function NewCategoryPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title: title.trim(),
-          description: description.trim(),
+          description: description.trim() || undefined,
           duration: finalDuration,
           habits,
         }),

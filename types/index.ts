@@ -6,7 +6,7 @@ export type DayStatus = "success" | "failed" | "missed" | "pending";
 export interface CategoryHabit {
   id: string;
   name: string;
-  description: string;
+  description?: string;
   type: "build" | "avoid";
   icon: string;
 }
@@ -28,7 +28,7 @@ export interface Category {
   _id: string;
   userId: string;
   title: string; // "My 2026 Transformation"
-  description: string; // "Become the person I want to be"
+  description?: string; // "Become the person I want to be"
   duration: number; // days (365 for 1 year)
   startDate: Date;
   endDate: Date;

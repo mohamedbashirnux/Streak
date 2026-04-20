@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
 
     const { title, description, duration, habits } = await req.json();
 
-    if (!title || !duration || !habits || habits.length === 0) {
+    if (!title || !duration) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
       
       days.push({
         date,
-        habits: habits.map((habit: any) => ({
+        habits: (habits || []).map((habit: any) => ({
           habitId: habit.id,
           completed: false,
         })),
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
       duration,
       startDate,
       endDate,
-      habits,
+      habits: habits || [],
       days,
       currentStreak: 0,
       longestStreak: 0,
