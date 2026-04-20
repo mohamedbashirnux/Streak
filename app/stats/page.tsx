@@ -146,15 +146,15 @@ export default function StatsPage() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-bold text-white mb-6">Badges</h2>
+              <h2 className="text-2xl font-bold text-white mb-6">🏆 Achievements</h2>
               
               {earnedBadges.length > 0 && (
                 <div className="mb-8">
-                  <h3 className="text-lg font-semibold text-green-500 mb-4">Earned</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                  <h3 className="text-lg font-semibold text-green-500 mb-4">Earned ({earnedBadges.length})</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {earnedBadges.map((badge) => (
-                      <Card key={badge.id} className="text-center">
-                        <div className="text-4xl mb-2">{badge.icon}</div>
+                      <Card key={badge.id} className="text-center border-green-500/20">
+                        <div className="text-5xl mb-2">{badge.icon}</div>
                         <p className="font-bold text-white text-sm">{badge.name}</p>
                         <p className="text-xs text-gray-400 mt-1">{badge.description}</p>
                       </Card>
@@ -165,11 +165,11 @@ export default function StatsPage() {
 
               {lockedBadges.length > 0 && (
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-400 mb-4">Locked</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                  <h3 className="text-lg font-semibold text-gray-400 mb-4">Locked ({lockedBadges.length})</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {lockedBadges.map((badge) => (
-                      <Card key={badge.id} className="text-center opacity-50">
-                        <div className="text-4xl mb-2 grayscale">{badge.icon}</div>
+                      <Card key={badge.id} className="text-center opacity-40">
+                        <div className="text-5xl mb-2 grayscale">{badge.icon}</div>
                         <p className="font-bold text-gray-400 text-sm">{badge.name}</p>
                         <p className="text-xs text-gray-500 mt-1">{badge.description}</p>
                       </Card>

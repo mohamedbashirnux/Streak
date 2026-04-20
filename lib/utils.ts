@@ -23,18 +23,18 @@ export function getRandomQuote(): string {
 }
 
 export const badges = [
-  { id: "first-blood", name: "First Blood", description: "Complete Day 1", icon: "🔥" },
-  { id: "one-week", name: "One Week Strong", description: "7 day streak", icon: "💪" },
-  { id: "21-warrior", name: "21 Day Warrior", description: "21 day streak", icon: "🏆" },
-  { id: "30-champion", name: "30 Day Champion", description: "30 day streak", icon: "👑" },
-  { id: "unbreakable", name: "Unbreakable", description: "Complete a 90 day challenge", icon: "💎" },
+  { id: "first-blood", name: "First Blood", description: "Complete Day 1", icon: "🔥", streak: 1 },
+  { id: "3-day-starter", name: "3 Day Starter", description: "3 day streak", icon: "⚡", streak: 3 },
+  { id: "one-week", name: "One Week Strong", description: "7 day streak", icon: "💪", streak: 7 },
+  { id: "two-week", name: "Two Week Warrior", description: "14 day streak", icon: "⚔️", streak: 14 },
+  { id: "21-warrior", name: "21 Day Warrior", description: "3 week streak", icon: "🏆", streak: 21 },
+  { id: "30-champion", name: "30 Day Champion", description: "1 month streak", icon: "👑", streak: 30 },
+  { id: "45-legend", name: "45 Day Legend", description: "45 day streak", icon: "🌟", streak: 45 },
+  { id: "60-master", name: "60 Day Master", description: "2 month streak", icon: "💎", streak: 60 },
+  { id: "90-unbreakable", name: "90 Day Unbreakable", description: "3 month streak", icon: "🏅", streak: 90 },
 ];
 
-export function checkBadgeEarned(streak: number, duration: number): string | null {
-  if (streak === 1) return "first-blood";
-  if (streak === 7) return "one-week";
-  if (streak === 21) return "21-warrior";
-  if (streak === 30) return "30-champion";
-  if (duration === 90 && streak === 90) return "unbreakable";
-  return null;
+export function checkBadgeEarned(streak: number): string | null {
+  const badge = badges.find(b => b.streak === streak);
+  return badge ? badge.id : null;
 }

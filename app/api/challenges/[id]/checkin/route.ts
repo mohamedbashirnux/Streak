@@ -72,7 +72,7 @@ export async function POST(
         challenge.longestStreak = newStreak;
       }
 
-      earnedBadge = checkBadgeEarned(newStreak, challenge.duration);
+      earnedBadge = checkBadgeEarned(newStreak);
 
       if (earnedBadge) {
         await UserModel.findByIdAndUpdate(session.user.id, {

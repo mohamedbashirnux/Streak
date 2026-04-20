@@ -6,7 +6,6 @@ import ProgressBar from "./ProgressBar";
 import CheckInButton from "./CheckInButton";
 import { motion } from "framer-motion";
 import { Flame, Target, Ban } from "lucide-react";
-import { format, isToday } from "date-fns";
 import { useRouter } from "next/navigation";
 
 interface ChallengeCardProps {
@@ -53,14 +52,9 @@ export default function ChallengeCard({ challenge, onCheckIn }: ChallengeCardPro
               <p className="text-sm text-gray-400 capitalize">{challenge.type} habit</p>
             </div>
           </div>
-          <div className="flex flex-col items-end gap-1">
-            <div className="flex items-center gap-2 text-orange-500">
-              <Flame size={20} />
-              <span className="text-lg font-bold">{challenge.currentStreak}</span>
-            </div>
-            {doneToday && (
-              <span className="text-xs text-green-500 font-medium">✅ Done today</span>
-            )}
+          <div className="flex items-center gap-2 text-orange-500">
+            <Flame size={20} />
+            <span className="text-lg font-bold">{challenge.currentStreak}</span>
           </div>
         </div>
 
