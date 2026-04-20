@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document, ObjectId } from "mongoose";
 
 export interface IHabit {
   id: string;
@@ -20,7 +20,6 @@ export interface IDayProgress {
 }
 
 export interface ILifeChapter extends Document {
-  _id: string;
   userId: string;
   title: string; // "My 2026 Transformation"
   description: string; // "Become the person I want to be"
