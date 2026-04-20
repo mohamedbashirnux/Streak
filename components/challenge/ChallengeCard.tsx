@@ -49,8 +49,8 @@ export default function ChallengeCard({ challenge, onCheckIn }: ChallengeCardPro
               )}
             </div>
             <div>
-              <h3 className="text-xl font-bold text-white">{challenge.name}</h3>
-              <p className="text-sm text-gray-400 capitalize">{challenge.type} habit</p>
+              <h3 className="text-xl font-bold" style={{ color: "var(--text-primary)" }}>{challenge.name}</h3>
+              <p className="text-sm capitalize" style={{ color: "var(--text-secondary)" }}>{challenge.type} habit</p>
             </div>
           </div>
           <div className="flex items-center gap-2 text-orange-500">
@@ -60,19 +60,19 @@ export default function ChallengeCard({ challenge, onCheckIn }: ChallengeCardPro
         </div>
 
         {challenge.motivation && (
-          <p className="text-gray-400 text-sm mb-4 italic">"{challenge.motivation}"</p>
+          <p className="text-sm mb-4 italic" style={{ color: "var(--text-secondary)" }}>"{challenge.motivation}"</p>
         )}
 
         <div className="space-y-3 mb-4">
           <div className="flex justify-between text-sm">
-            <span className="text-gray-400">Progress</span>
-            <span className="text-white font-medium">
+            <span style={{ color: "var(--text-secondary)" }}>Progress</span>
+            <span className="font-medium" style={{ color: "var(--text-primary)" }}>
               Day {challenge.currentStreak} of {challenge.duration}
             </span>
           </div>
           <ProgressBar current={challenge.currentStreak} total={challenge.duration} />
           <div className="flex justify-between text-sm">
-            <span className="text-gray-400">Days remaining</span>
+            <span style={{ color: "var(--text-secondary)" }}>Days remaining</span>
             <span className="text-green-500 font-medium">{daysRemaining}</span>
           </div>
         </div>

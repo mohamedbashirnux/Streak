@@ -99,10 +99,10 @@ export default function DashboardPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">
+            <h1 className="text-3xl font-bold mb-2" style={{ color: "var(--text-primary)" }}>
               Welcome back, {session.user?.name}!
             </h1>
-            <p className="text-gray-400">Keep your streaks alive today</p>
+            <p style={{ color: "var(--text-secondary)" }}>Keep your streaks alive today</p>
           </div>
           <Button onClick={() => router.push("/challenge/new")} className="flex items-center gap-2">
             <Plus size={20} />
@@ -118,7 +118,7 @@ export default function DashboardPage() {
           </div>
         ) : activeChallenges.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-400 text-lg mb-4">No active challenges yet</p>
+            <p className="text-lg mb-4" style={{ color: "var(--text-secondary)" }}>No active challenges yet</p>
             <Button onClick={() => router.push("/challenge/new")}>
               Create Your First Challenge
             </Button>
