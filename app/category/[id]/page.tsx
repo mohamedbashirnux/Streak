@@ -182,21 +182,21 @@ export default function CategoryDetailPage() {
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <Button
-            variant="ghost"
-            onClick={() => router.push("/dashboard")}
-            className="flex items-center gap-2 mb-4"
-          >
-            <ArrowLeft size={20} />
-            Back
-          </Button>
-          
           <div className="flex items-start justify-between gap-4">
-            <div className="flex-1">
-              <h1 className="text-3xl font-bold text-white mb-3">{category.title}</h1>
-              {category.description && (
-                <p className="text-gray-400 leading-relaxed">{category.description}</p>
-              )}
+            <div className="flex items-start gap-3 flex-1">
+              <Button
+                variant="ghost"
+                onClick={() => router.push("/dashboard")}
+                className="flex items-center gap-2 mt-1"
+              >
+                <ArrowLeft size={20} />
+              </Button>
+              <div className="flex-1">
+                <h1 className="text-3xl font-bold text-white mb-3">{category.title}</h1>
+                {category.description && (
+                  <p className="text-gray-400 leading-relaxed">{category.description}</p>
+                )}
+              </div>
             </div>
             <div className="flex items-center gap-3">
               <Button
