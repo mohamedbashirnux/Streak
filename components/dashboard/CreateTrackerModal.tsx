@@ -69,7 +69,7 @@ export default function CreateTrackerModal({ isOpen, onClose }: CreateTrackerMod
                 Group connected habits together. Win the day by completing all.
               </p>
               <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
-                <span>✓ Up to 6 habits</span>
+                <span>✓ Unlimited habits</span>
                 <span>•</span>
                 <span>✓ All-or-nothing tracking</span>
               </div>

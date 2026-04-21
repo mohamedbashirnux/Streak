@@ -49,11 +49,6 @@ export default function NewCategoryPage() {
       return;
     }
 
-    if (habits.length >= 6) {
-      toast.error("Maximum 6 habits per Category");
-      return;
-    }
-
     const habit: CategoryHabit = {
       id: Date.now().toString(),
       name: newHabit.name.trim(),
@@ -263,7 +258,7 @@ export default function NewCategoryPage() {
           {/* Habits List */}
           {habits.length > 0 && (
             <Card>
-              <h2 className="text-xl font-bold text-white mb-4">Your Habits ({habits.length}/6)</h2>
+              <h2 className="text-xl font-bold text-white mb-4">Your Habits ({habits.length})</h2>
               <div className="space-y-3">
                 {habits.map((habit) => (
                   <div key={habit.id} className="flex items-center gap-4 p-4 bg-gray-800 rounded-lg">
