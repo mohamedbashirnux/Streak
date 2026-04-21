@@ -181,41 +181,40 @@ export default function CategoryDetailPage() {
       <Navbar />
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
+        <div className="mb-8">
           <Button
             variant="ghost"
             onClick={() => router.push("/dashboard")}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 mb-4"
           >
             <ArrowLeft size={20} />
             Back
           </Button>
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-2">
-              <Folder className="text-purple-500" size={32} />
-              <h1 className="text-3xl font-bold text-white">{category.title}</h1>
+          
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1">
+              <h1 className="text-3xl font-bold text-white mb-3">{category.title}</h1>
+              {category.description && (
+                <p className="text-gray-400 leading-relaxed">{category.description}</p>
+              )}
             </div>
-            {category.description && (
-              <p className="text-gray-400">{category.description}</p>
-            )}
-          </div>
-          <div className="flex items-center gap-3">
-            <Button
-              variant="secondary"
-              onClick={() => router.push(`/category/${id}/edit`)}
-              className="flex items-center gap-2 bg-purple-500 hover:bg-purple-600"
-            >
-              <Plus size={16} />
-              Add New Habit
-            </Button>
-            <Button
-              variant="danger"
-              onClick={deleteCategory}
-              className="flex items-center gap-2"
-            >
-              <Trash2 size={16} />
-              Delete
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button
+                onClick={() => router.push(`/category/${id}/edit`)}
+                className="flex items-center gap-2 bg-purple-500 hover:bg-purple-600"
+              >
+                <Plus size={16} />
+                Add Habit
+              </Button>
+              <Button
+                variant="danger"
+                onClick={deleteCategory}
+                className="flex items-center gap-2"
+              >
+                <Trash2 size={16} />
+                Delete
+              </Button>
+            </div>
           </div>
         </div>
 
