@@ -41,102 +41,89 @@ export default function CategoryCard({ category }: CategoryCardProps) {
       transition={{ duration: 0.3 }}
     >
       <Card
-        className={`cursor-pointer transition-all hover:scale-105 ${wonToday ? "border-purple-500/40 bg-purple-500/5" : "hover:border-purple-500/30"}`}
+        className={`cursor-pointer transition-all hover:scale-[1.02] ${wonToday ? "border-purple-500/40 bg-purple-500/5" : "hover:border-purple-500/30"}`}
         onClick={handleClick}
       >
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className={`w-12 h-12 rounded-full flex items-center justify-center ${wonToday ? "bg-purple-500/20" : "bg-purple-500/10"}`}>
-              <Folder className="text-purple-500" size={24} />
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-white">{category.title}</h3>
-              <p className="text-sm text-gray-400">Category • {category.habits.length} habits</p>
+        {/* Header */}
+        <div className="flex items-start justify-between mb-3">
+          <div className="flex-1">
+            <h3 className="text-xl font-bold text-white mb-1 line-clamp-1">{category.title}</h3>
+            <div className="flex items-center gap-3 text-sm text-gray-400">
+              <span>{category.habits.length} habits</span>
+              <span>•</span>
+              <span>{category.duration} days</span>
             </div>
           </div>
-          <div className="flex items-center gap-2 text-orange-500">
-            <Flame size={20} />
-            <span className="text-lg font-bold">{category.currentStreak}</span>
+          <div className="flex items-center gap-1.5 bg-orange-500/10 px-3 py-1.5 rounded-full">
+            <Flame className="text-orange-500" size={18} />
+            <span className="text-lg font-bold text-orange-500">{category.currentStreak}</span>
           </div>
         </div>
 
+        {/* Description */}
         {category.description && (
-          <p className="text-gray-400 text-sm mb-4 italic">"{category.description}"</p>
+          <p className="text-gray-400 text-sm mb-4 line-clamp-2">{category.description}</p>
         )}
 
-        {/* Habits Preview */}
+        {/* Progress Bar */}
         <div className="mb-4">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-sm text-gray-400">Today's Progress</span>
-            <span className="text-sm text-white font-medium">
-              {category.habits.length > 0 ? `${completedHabits}/${totalHabits}` : "No habits"}
-            </span>
-          </div>
-          {category.habits.length > 0 ? (
-            <div className="flex flex-wrap gap-2">
-              {category.habits.slice(0, 4).map((habit) => {
-                const habitProgress = todayProgress?.habits.find(h => h.habitId === habit.id);
-                const completed = habitProgress?.completed || false;
-                
-                return (
-                  <div
-                    key={habit.id}
-                    className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs ${
-                      completed 
-                        ? "bg-purple-500/20 text-purple-400" 
-                        : "bg-gray-800 text-gray-400"
-                    }`}
-                  >
-                    <span>{habit.icon}</span>
-                    <span className="truncate max-w-20">{habit.name}</span>
-                    {habit.type === "build" ? (
-                      <Target size={12} />
-                    ) : (
-                      <Ban size={12} />
-                    )}
-                  </div>
-                );
-              })}
-              {category.habits.length > 4 && (
-                <div className="px-2 py-1 rounded-full text-xs bg-gray-800 text-gray-400">
-                  +{category.habits.length - 4} more
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="text-sm text-gray-500 italic">
-              No habits added yet - click to add habits
-            </div>
-          )}
-        </div>
-
-        <div className="space-y-3 mb-4">
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-400">Progress</span>
-            <span className="text-white font-medium">
-              Day {category.currentStreak} of {category.duration}
-            </span>
+          <div className="flex justify-between text-xs text-gray-400 mb-2">
+            <span>Day {category.currentStreak}</span>
+            <span>{Math.round((category.currentStreak / category.duration) * 100)}%</span>
           </div>
           <ProgressBar current={category.currentStreak} total={category.duration} />
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-400">Days remaining</span>
-            <span className="text-purple-500 font-medium">{daysRemaining}</span>
-          </div>
         </div>
 
-        {/* Status */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Calendar size={16} className="text-gray-400" />
-            <span className="text-sm text-gray-400">
-              {canCheckIn ? "Ready to check in" : wonToday ? "Perfect day!" : "Check back tomorrow"}
-            </span>
+        {/* Habits Preview */}
+        {category.habits.length > 0 ? (
+          <div className="flex flex-wrap gap-1.5 mb-4">
+            {category.habits.slice(0, 6).map((habit) => {
+              const habitProgress = todayProgress?.habits.find(h => h.habitId === habit.id);
+              const completed = habitProgress?.completed || false;
+              
+              return (
+                <div
+                  key={habit.id}
+                  className={`text-lg ${completed ? "opacity-100" : "opacity-40 grayscale"}`}
+                  title={habit.name}
+                >
+                  {habit.icon}
+                </div>
+              );
+            })}
+            {category.habits.length > 6 && (
+              <div className="text-xs text-gray-500 flex items-center">
+                +{category.habits.length - 6}
+              </div>
+            )}
           </div>
-          {wonToday && (
-            <div className="text-purple-500 text-sm font-medium">
-              ✨ Day Won
-            </div>
-          )}
+        ) : (
+          <div className="text-sm text-gray-500 italic mb-4">
+            Click to add habits
+          </div>
+        )}
+
+        {/* Footer Status */}
+        <div className="flex items-center justify-between pt-3 border-t border-gray-800">
+          <div className="flex items-center gap-2">
+            {wonToday ? (
+              <>
+                <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
+                <span className="text-sm text-purple-400 font-medium">Perfect day!</span>
+              </>
+            ) : canCheckIn ? (
+              <>
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-sm text-green-400 font-medium">Ready to check in</span>
+              </>
+            ) : (
+              <>
+                <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
+                <span className="text-sm text-gray-500">Check back tomorrow</span>
+              </>
+            )}
+          </div>
+          <span className="text-xs text-gray-500">{daysRemaining} days left</span>
         </div>
       </Card>
     </motion.div>
