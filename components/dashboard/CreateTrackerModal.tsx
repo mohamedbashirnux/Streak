@@ -77,12 +77,6 @@ export default function CreateTrackerModal({ isOpen, onClose }: CreateTrackerMod
             <ArrowRight className="text-gray-600 group-hover:text-purple-500 transition-colors" size={24} />
           </div>
         </Card>
-
-        <div className="pt-4 border-t border-gray-800">
-          <p className="text-xs text-gray-500 text-center">
-            💡 Tip: Start with a single habit if you're new to habit tracking
-          </p>
-        </div>
       </div>
     </Modal>
   );
