@@ -50,6 +50,7 @@ export default function ChallengeForm() {
     { value: 30, label: "30 Days" },
     { value: 60, label: "60 Days" },
     { value: 90, label: "90 Days" },
+    { value: 365, label: "1 Year" },
   ];
 
   return (
@@ -106,7 +107,7 @@ export default function ChallengeForm() {
         <label className="block text-sm font-medium text-gray-300 mb-2">
           Duration *
         </label>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
           {durationOptions.map((option) => (
             <button
               key={option.value}
