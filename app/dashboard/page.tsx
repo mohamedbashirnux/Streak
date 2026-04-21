@@ -148,7 +148,7 @@ export default function DashboardPage() {
           <div className="mb-12">
             <div className="flex items-center gap-3 mb-6">
               <Folder className="text-purple-500" size={24} />
-              <h2 className="text-2xl font-bold text-white">Multiple Habits</h2>
+              <h2 className="text-2xl font-bold text-white">Categories</h2>
               <span className="text-sm text-gray-400">({activeCategories.length})</span>
             </div>
             
@@ -171,7 +171,7 @@ export default function DashboardPage() {
           <div>
             <div className="flex items-center gap-3 mb-6">
               <Target className="text-green-500" size={24} />
-              <h2 className="text-2xl font-bold text-white">Single Habits</h2>
+              <h2 className="text-2xl font-bold text-white">Single Challenges</h2>
               <span className="text-sm text-gray-400">({activeChallenges.length})</span>
             </div>
 
