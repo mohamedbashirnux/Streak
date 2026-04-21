@@ -203,10 +203,10 @@ export default function CategoryDetailPage() {
             <Button
               variant="secondary"
               onClick={() => router.push(`/category/${id}/edit`)}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 bg-purple-500 hover:bg-purple-600"
             >
-              <Edit size={16} />
-              Edit
+              <Plus size={16} />
+              Add New Habit
             </Button>
             <Button
               variant="danger"
