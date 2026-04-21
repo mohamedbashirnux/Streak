@@ -8,6 +8,7 @@ import Navbar from "@/components/layout/Navbar";
 import ChallengeCard from "@/components/challenge/ChallengeCard";
 import CategoryCard from "@/components/category/CategoryCard";
 import MotivationalQuote from "@/components/dashboard/MotivationalQuote";
+import CreateTrackerModal from "@/components/dashboard/CreateTrackerModal";
 import Button from "@/components/ui/Button";
 import { Plus, Loader2, Folder, Target } from "lucide-react";
 import toast from "react-hot-toast";
@@ -20,6 +21,7 @@ export default function DashboardPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [categoriesLoading, setCategoriesLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -125,20 +127,19 @@ export default function DashboardPage() {
             </h1>
             <p className="text-gray-400">Transform your life, one day at a time</p>
           </div>
-          <div className="flex items-center gap-3">
-            <Button 
-              onClick={() => router.push("/category/new")} 
-              className="flex items-center gap-2 bg-purple-500 hover:bg-purple-600"
-            >
-              <Folder size={20} />
-              New Category
-            </Button>
-            <Button onClick={() => router.push("/challenge/new")} className="flex items-center gap-2">
-              <Target size={20} />
-              New Challenge
-            </Button>
-          </div>
+          <Button 
+            onClick={() => setShowCreateModal(true)} 
+            className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-purple-500 hover:from-green-600 hover:to-purple-600"
+          >
+            <Plus size={20} />
+            Create Tracker
+          </Button>
         </div>
+
+        <CreateTrackerModal 
+          isOpen={showCreateModal} 
+          onClose={() => setShowCreateModal(false)} 
+        />
 
         <MotivationalQuote />
 
@@ -147,7 +148,7 @@ export default function DashboardPage() {
           <div className="mb-12">
             <div className="flex items-center gap-3 mb-6">
               <Folder className="text-purple-500" size={24} />
-              <h2 className="text-2xl font-bold text-white">Categories</h2>
+              <h2 className="text-2xl font-bold text-white">Multiple Habits</h2>
               <span className="text-sm text-gray-400">({activeCategories.length})</span>
             </div>
             
@@ -170,7 +171,7 @@ export default function DashboardPage() {
           <div>
             <div className="flex items-center gap-3 mb-6">
               <Target className="text-green-500" size={24} />
-              <h2 className="text-2xl font-bold text-white">Single Challenges</h2>
+              <h2 className="text-2xl font-bold text-white">Single Habits</h2>
               <span className="text-sm text-gray-400">({activeChallenges.length})</span>
             </div>
 
@@ -196,26 +197,22 @@ export default function DashboardPage() {
         {!loading && !categoriesLoading && activeCategories.length === 0 && activeChallenges.length === 0 && (
           <div className="text-center py-16">
             <div className="mb-6">
-              <Folder className="mx-auto text-purple-500 mb-4" size={64} />
-              <h3 className="text-2xl font-bold text-white mb-2">Start Your Transformation</h3>
+              <div className="w-20 h-20 bg-gradient-to-br from-green-500/20 to-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Plus className="text-white" size={40} />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-2">Start Your Journey</h3>
               <p className="text-gray-400 text-lg mb-8 max-w-2xl mx-auto">
-                Create a Category to group connected habits together, 
-                or start with a single challenge to build one habit at a time.
+                Create your first habit tracker and start building the life you want.
+                Track single habits or group multiple habits together.
               </p>
             </div>
-            <div className="flex items-center justify-center gap-4">
-              <Button 
-                onClick={() => router.push("/category/new")}
-                className="bg-purple-500 hover:bg-purple-600 flex items-center gap-2"
-              >
-                <Folder size={20} />
-                Create Category
-              </Button>
-              <Button onClick={() => router.push("/challenge/new")} className="flex items-center gap-2">
-                <Target size={20} />
-                Create Challenge
-              </Button>
-            </div>
+            <Button 
+              onClick={() => setShowCreateModal(true)}
+              className="bg-gradient-to-r from-green-500 to-purple-500 hover:from-green-600 hover:to-purple-600 flex items-center gap-2 mx-auto"
+            >
+              <Plus size={20} />
+              Create Your First Tracker
+            </Button>
           </div>
         )}
       </main>
