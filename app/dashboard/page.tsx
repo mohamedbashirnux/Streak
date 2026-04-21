@@ -129,7 +129,7 @@ export default function DashboardPage() {
           </div>
           <Button 
             onClick={() => setShowCreateModal(true)} 
-            className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-purple-500 hover:from-green-600 hover:to-purple-600"
+            className="flex items-center gap-2"
           >
             <Plus size={20} />
             Create Tracker
@@ -197,9 +197,7 @@ export default function DashboardPage() {
         {!loading && !categoriesLoading && activeCategories.length === 0 && activeChallenges.length === 0 && (
           <div className="text-center py-16">
             <div className="mb-6">
-              <div className="w-20 h-20 bg-gradient-to-br from-green-500/20 to-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Plus className="text-white" size={40} />
-              </div>
+              <Plus className="mx-auto text-green-500 mb-4" size={64} />
               <h3 className="text-2xl font-bold text-white mb-2">Start Your Journey</h3>
               <p className="text-gray-400 text-lg mb-8 max-w-2xl mx-auto">
                 Create your first habit tracker and start building the life you want.
@@ -208,7 +206,7 @@ export default function DashboardPage() {
             </div>
             <Button 
               onClick={() => setShowCreateModal(true)}
-              className="bg-gradient-to-r from-green-500 to-purple-500 hover:from-green-600 hover:to-purple-600 flex items-center gap-2 mx-auto"
+              className="flex items-center gap-2 mx-auto"
             >
               <Plus size={20} />
               Create Your First Tracker
