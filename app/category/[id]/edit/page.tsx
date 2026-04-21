@@ -99,8 +99,9 @@ export default function EditCategoryPage() {
       });
 
       if (res.ok) {
-        toast.success("Category updated!");
+        toast.success("Habits updated!");
         router.push(`/category/${id}`);
+        router.refresh(); // Force refresh to load new habits
       } else {
         const data = await res.json();
         toast.error(data.error || "Failed to update category");
