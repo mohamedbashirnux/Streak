@@ -373,16 +373,7 @@ export default function CategoryDetailPage() {
                   Add Habits
                 </Button>
               </div>
-            )} 
-                        ? "bg-green-500 border-green-500" 
-                        : "border-gray-600"
-                    }`}>
-                      {completed && <CheckCircle className="text-white" size={16} />}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+            )}
           </div>
 
           {canCheckIn && category.habits.length > 0 && (
