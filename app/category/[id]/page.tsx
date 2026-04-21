@@ -10,7 +10,7 @@ import Button from "@/components/ui/Button";
 import ProgressBar from "@/components/challenge/ProgressBar";
 import { 
   Loader2, Folder, Flame, Calendar, Target, Ban, 
-  CheckCircle, XCircle, Clock, Trash2, ArrowLeft, Plus 
+  CheckCircle, XCircle, Clock, Trash2, ArrowLeft, Plus, Edit 
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { Category, HabitProgress } from "@/types";
@@ -199,14 +199,24 @@ export default function CategoryDetailPage() {
               <p className="text-gray-400">{category.description}</p>
             )}
           </div>
-          <Button
-            variant="danger"
-            onClick={deleteCategory}
-            className="flex items-center gap-2"
-          >
-            <Trash2 size={16} />
-            Delete
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button
+              variant="secondary"
+              onClick={() => router.push(`/category/${id}/edit`)}
+              className="flex items-center gap-2"
+            >
+              <Edit size={16} />
+              Edit
+            </Button>
+            <Button
+              variant="danger"
+              onClick={deleteCategory}
+              className="flex items-center gap-2"
+            >
+              <Trash2 size={16} />
+              Delete
+            </Button>
+          </div>
         </div>
 
         {/* Stats Cards */}
