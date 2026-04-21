@@ -53,6 +53,12 @@
 body {
   background: #0a0a0a !important;
   color: #ededed !important;
+  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif !important;
+}
+
+/* Force font on all elements */
+* {
+  font-family: inherit !important;
 }
 
 /* Force all elements to inherit dark colors */
