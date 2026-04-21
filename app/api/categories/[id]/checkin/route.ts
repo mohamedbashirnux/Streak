@@ -81,14 +81,6 @@ export async function POST(
         category.longestStreak = newStreak;
       }
 
-      // Check for badge
-      earnedBadge = checkBadgeEarned(newStreak, category.duration);
-      if (earnedBadge) {
-        await UserModel.findByIdAndUpdate(session.user.id, {
-          $addToSet: { badges: earnedBadge },
-        });
-      }
-
       // Check if category completed
       if (newStreak === category.duration) {
         newStatus = "completed";
