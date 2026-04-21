@@ -197,11 +197,11 @@ export default function DashboardPage() {
         {!loading && !categoriesLoading && activeCategories.length === 0 && activeChallenges.length === 0 && (
           <div className="text-center py-16">
             <div className="mb-6">
-              <Plus className="mx-auto text-green-500 mb-4" size={64} />
-              <h3 className="text-2xl font-bold text-white mb-2">Start Your Journey</h3>
+              <Folder className="mx-auto text-purple-500 mb-4" size={64} />
+              <h3 className="text-2xl font-bold text-white mb-2">Start Your Transformation</h3>
               <p className="text-gray-400 text-lg mb-8 max-w-2xl mx-auto">
-                Create your first habit tracker and start building the life you want.
-                Track single habits or group multiple habits together.
+                Create a Category to group connected habits together, 
+                or start with a single challenge to build one habit at a time.
               </p>
             </div>
             <Button 
