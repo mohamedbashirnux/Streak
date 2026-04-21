@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
-import { Target, Ban } from "lucide-react";
+import { Target, Ban, Calendar } from "lucide-react";
 import toast from "react-hot-toast";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export default function ChallengeForm() {
   const router = useRouter();
@@ -16,6 +18,7 @@ export default function ChallengeForm() {
     motivation: "",
     startDate: new Date().toISOString().split("T")[0],
   });
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -152,12 +155,23 @@ export default function ChallengeForm() {
         <label className="block text-sm font-medium text-gray-300 mb-2">
           Start Date
         </label>
-        <input
-          type="date"
-          value={formData.startDate}
-          onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-          className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-green-500"
-        />
+        <div className="relative">
+          <DatePicker
+            selected={selectedDate}
+            onChange={(date: Date | null) => {
+              if (date) {
+                setSelectedDate(date);
+                setFormData({ ...formData, startDate: date.toISOString().split("T")[0] });
+              }
+            }}
+            dateFormat="MMMM d, yyyy"
+            minDate={new Date()}
+            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-green-500"
+            calendarClassName="dark-calendar"
+            wrapperClassName="w-full"
+          />
+          <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={20} />
+        </div>
       </div>
 
       <div className="flex gap-4">
