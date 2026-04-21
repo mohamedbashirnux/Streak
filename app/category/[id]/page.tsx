@@ -360,18 +360,11 @@ export default function CategoryDetailPage() {
               })
             ) : (
               <div className="text-center py-8">
-                <div className="text-gray-500 mb-4">
+                <div className="text-gray-500">
                   <Plus className="mx-auto mb-2" size={48} />
                   <h3 className="text-lg font-semibold">No habits added yet</h3>
-                  <p className="text-sm">Add habits to start tracking your transformation</p>
+                  <p className="text-sm">Go back to dashboard and recreate this category with habits</p>
                 </div>
-                <Button
-                  onClick={() => router.push(`/category/${id}/edit`)}
-                  className="bg-purple-500 hover:bg-purple-600 flex items-center gap-2 mx-auto"
-                >
-                  <Plus size={16} />
-                  Add Habits
-                </Button>
               </div>
             )}
           </div>
