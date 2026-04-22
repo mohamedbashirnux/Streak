@@ -4,6 +4,7 @@ import connectDB from "@/lib/mongodb";
 import ChallengeModel from "@/models/Challenge";
 import StatsModel from "@/models/Stats";
 import UserModel from "@/models/User";
+import { getBadgeForStreak } from "@/lib/utils";
 
 export const runtime = "nodejs";
 
@@ -71,7 +72,8 @@ export async function POST(
         challenge.longestStreak = newStreak;
       }
 
-      earnedBadge = checkBadgeEarned(newStreak, challenge.duration);
+      const badge = getBadgeForStreak(newStreak);
+      earnedBadge = badge ? badge.id : null;
 
       if (earnedBadge) {
         await UserModel.findByIdAndUpdate(session.user.id, {
