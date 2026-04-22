@@ -73,6 +73,13 @@ export async function POST(
     // Check if this is the first check-in of the day
     const isFirstCheckIn = category.days[todayIndex].status === "pending";
     
+    console.log("Check-in Debug:", {
+      anyCompleted,
+      isFirstCheckIn,
+      currentStreak: category.currentStreak,
+      todayStatus: category.days[todayIndex].status,
+    });
+    
     category.days[todayIndex].dayWon = anyCompleted;
     category.days[todayIndex].status = anyCompleted ? "won" : "lost";
 
@@ -85,6 +92,8 @@ export async function POST(
       // Day won - continue streak (even if not all habits completed)
       newStreak += 1;
       category.totalDaysWon += 1;
+      
+      console.log("Incrementing streak to:", newStreak);
 
       if (newStreak > category.longestStreak) {
         category.longestStreak = newStreak;
@@ -110,6 +119,9 @@ export async function POST(
       // Day lost on first check-in - reset streak
       newStreak = 0;
       category.totalDaysLost += 1;
+      console.log("Resetting streak to 0");
+    } else {
+      console.log("Not first check-in, keeping streak at:", newStreak);
     }
     // If not first check-in, just update habits but don't change streak
 
