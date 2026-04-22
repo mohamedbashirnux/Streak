@@ -387,8 +387,8 @@ export default function CategoryDetailPage() {
                 {allCompleted 
                   ? "🔥 Mark All Done - Win Today!" 
                   : completedHabits === 1
-                  ? "✅ Mark 1 Habit Done"
-                  : `✅ Mark ${completedHabits} Habits Done`
+                  ? "Mark 1 Habit Done"
+                  : `Mark ${completedHabits} Habits Done`
                 }
               </Button>
             </div>
