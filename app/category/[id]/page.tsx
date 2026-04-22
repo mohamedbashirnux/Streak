@@ -172,7 +172,7 @@ export default function CategoryDetailPage() {
     return dayDate.getTime() === today.getTime();
   });
 
-  const canCheckIn = todayProgress && todayProgress.status === "pending";
+  const canCheckIn = todayProgress && (todayProgress.status === "pending" || todayProgress.status === "won");
   const wonToday = todayProgress?.dayWon || false;
   const completedHabits = habitProgress.filter(h => h.completed).length;
   const allCompleted = completedHabits === category.habits.length;

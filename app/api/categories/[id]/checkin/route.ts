@@ -51,9 +51,9 @@ export async function POST(
       );
     }
 
-    if (category.days[todayIndex].status !== "pending") {
+    if (category.days[todayIndex].status === "lost") {
       return NextResponse.json(
-        { error: "Already checked in today" },
+        { error: "Cannot check in after losing the day" },
         { status: 400 }
       );
     }
