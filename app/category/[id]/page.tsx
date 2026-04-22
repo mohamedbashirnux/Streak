@@ -8,6 +8,7 @@ import Navbar from "@/components/layout/Navbar";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import ProgressBar from "@/components/challenge/ProgressBar";
+import CalendarHeatmap from "@/components/challenge/CalendarHeatmap";
 import { 
   Loader2, Folder, Flame, Calendar, Target, Ban, 
   CheckCircle, XCircle, Clock, Trash2, ArrowLeft, Plus, Edit 
@@ -402,6 +403,15 @@ export default function CategoryDetailPage() {
               </Button>
             </div>
           )}
+        </Card>
+
+        {/* Calendar Heatmap */}
+        <Card>
+          <div className="flex items-center gap-3 mb-4">
+            <Calendar className="text-purple-500" size={24} />
+            <h2 className="text-xl font-bold text-white">Activity Calendar</h2>
+          </div>
+          <CalendarHeatmap days={category.days} />
         </Card>
       </main>
     </div>
