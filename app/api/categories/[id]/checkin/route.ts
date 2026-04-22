@@ -61,19 +61,24 @@ export async function POST(
     // Update today's progress
     category.days[todayIndex].habits = habitProgress;
     
-    // Check if ALL habits are completed (day won)
-    // If no habits exist, consider it a won day (empty category)
-    const allCompleted = category.habits.length === 0 ? true : habitProgress.every((h: any) => h.completed === true);
-    category.days[todayIndex].dayWon = allCompleted;
-    category.days[todayIndex].status = allCompleted ? "won" : "lost";
+    // Calculate completion percentage
+    const completedCount = habitProgress.filter((h: any) => h.completed === true).length;
+    const totalHabits = category.habits.length;
+    const completionRate = totalHabits > 0 ? completedCount / totalHabits : 0;
+    
+    // Day is "won" if at least one habit is completed (not all-or-nothing anymore)
+    const anyCompleted = completedCount > 0;
+    const allCompleted = completedCount === totalHabits;
+    
+    category.days[todayIndex].dayWon = anyCompleted;
+    category.days[todayIndex].status = anyCompleted ? "won" : "lost";
 
     let newStreak = category.currentStreak;
     let newStatus = category.status;
     let completedAt = category.completedAt;
-    let earnedBadge: string | null = null;
 
-    if (allCompleted) {
-      // Day won - continue streak
+    if (anyCompleted) {
+      // Day won - continue streak (even if not all habits completed)
       newStreak += 1;
       category.totalDaysWon += 1;
 
@@ -121,13 +126,16 @@ export async function POST(
 
     return NextResponse.json({
       category,
-      earnedBadge,
-      dayWon: allCompleted,
+      dayWon: anyCompleted,
+      completedCount,
+      totalHabits,
       message: allCompleted
         ? newStatus === "completed"
           ? "🎉 Category completed! You transformed yourself!"
           : "🔥 Perfect day! All habits completed!"
-        : "💪 Keep going! Tomorrow is a new chance to win the day.",
+        : anyCompleted
+        ? `✅ Progress saved! ${completedCount}/${totalHabits} habits completed`
+        : "💪 No habits completed today. Try again tomorrow!",
     });
   } catch (error) {
     console.error("Category check-in error:", error);
