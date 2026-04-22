@@ -4,7 +4,6 @@ import connectDB from "@/lib/mongodb";
 import ChallengeModel from "@/models/Challenge";
 import StatsModel from "@/models/Stats";
 import UserModel from "@/models/User";
-import { checkBadgeEarned } from "@/lib/utils";
 
 export const runtime = "nodejs";
 
