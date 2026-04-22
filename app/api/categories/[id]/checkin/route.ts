@@ -70,6 +70,9 @@ export async function POST(
     const anyCompleted = completedCount > 0;
     const allCompleted = completedCount === totalHabits;
     
+    // Check if this is the first check-in of the day
+    const isFirstCheckIn = category.days[todayIndex].status === "pending";
+    
     category.days[todayIndex].dayWon = anyCompleted;
     category.days[todayIndex].status = anyCompleted ? "won" : "lost";
 
@@ -77,7 +80,8 @@ export async function POST(
     let newStatus = category.status;
     let completedAt = category.completedAt;
 
-    if (anyCompleted) {
+    // Only increment streak on FIRST check-in of the day
+    if (anyCompleted && isFirstCheckIn) {
       // Day won - continue streak (even if not all habits completed)
       newStreak += 1;
       category.totalDaysWon += 1;
