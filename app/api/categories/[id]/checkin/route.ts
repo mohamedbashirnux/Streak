@@ -106,11 +106,12 @@ export async function POST(
           { upsert: true }
         );
       }
-    } else {
-      // Day lost - reset streak
+    } else if (!anyCompleted && isFirstCheckIn) {
+      // Day lost on first check-in - reset streak
       newStreak = 0;
       category.totalDaysLost += 1;
     }
+    // If not first check-in, just update habits but don't change streak
 
     category.currentStreak = newStreak;
     category.status = newStatus;

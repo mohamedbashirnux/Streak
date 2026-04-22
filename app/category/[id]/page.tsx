@@ -368,7 +368,7 @@ export default function CategoryDetailPage() {
             )}
           </div>
 
-          {canCheckIn && category.habits.length > 0 && completedHabits > 0 && (
+          {canCheckIn && category.habits.length > 0 && completedHabits > 0 && !wonToday && (
             <div className="pt-4 border-t border-gray-800">
               <Button
                 onClick={handleCheckIn}
