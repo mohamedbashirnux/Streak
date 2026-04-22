@@ -102,24 +102,10 @@ export default function CategoryDetailPage() {
       const data = await res.json();
 
       if (res.ok) {
-        setCategory(data.category);
         toast.success(data.message);
         
-        if (data.earnedBadge) {
-          toast.success(`🎉 Badge earned: ${data.earnedBadge}!`, { duration: 5000 });
-        }
-
-        // Celebrate milestones
-        if (data.dayWon) {
-          const milestones = [7, 21, 30, 60, 90, 180, 365];
-          if (milestones.includes(data.category.currentStreak)) {
-            toast(`🎉 ${data.category.currentStreak} day milestone! You're transforming!`, {
-              duration: 5000,
-              icon: "📁",
-              style: { background: "#7c3aed", color: "#fff", border: "1px solid #a855f7" },
-            });
-          }
-        }
+        // Reload the category to get fresh data
+        await fetchCategory();
       } else {
         toast.error(data.error || "Check-in failed");
       }
