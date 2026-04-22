@@ -78,39 +78,51 @@ export default function CategoryDetailPage() {
     }
   };
 
-  const toggleHabit = (habitId: string) => {
-    setHabitProgress(prev => 
-      prev.map(h => 
-        h.habitId === habitId 
-          ? { ...h, completed: !h.completed }
-          : h
-      )
+  const toggleHabit = async (habitId: string) => {
+    if (checkingIn) return; // Prevent multiple clicks during save
+    
+    // Update local state first for immediate UI feedback
+    const newProgress = habitProgress.map(h => 
+      h.habitId === habitId 
+        ? { ...h, completed: !h.completed }
+        : h
     );
-  };
+    setHabitProgress(newProgress);
 
-  const handleCheckIn = async () => {
-    if (!category) return;
-
+    // Auto-save to backend
     setCheckingIn(true);
     try {
       const res = await fetch(`/api/categories/${id}/checkin`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ habitProgress }),
+        body: JSON.stringify({ habitProgress: newProgress }),
       });
 
       const data = await res.json();
 
       if (res.ok) {
-        toast.success(data.message);
+        const completedCount = newProgress.filter(h => h.completed).length;
+        const allCompleted = completedCount === category?.habits.length;
+        
+        if (allCompleted) {
+          toast.success("🔥 Perfect day! All habits completed!");
+        } else if (completedCount > 0) {
+          toast.success(`Saved! ${completedCount} habit${completedCount > 1 ? 's' : ''} done`);
+        } else {
+          toast.success("Progress saved");
+        }
         
         // Reload the category to get fresh data
         await fetchCategory();
       } else {
-        toast.error(data.error || "Check-in failed");
+        toast.error(data.error || "Failed to save");
+        // Revert on error
+        setHabitProgress(habitProgress);
       }
     } catch (error) {
       toast.error("Something went wrong");
+      // Revert on error
+      setHabitProgress(habitProgress);
     } finally {
       setCheckingIn(false);
     }
@@ -164,7 +176,6 @@ export default function CategoryDetailPage() {
   const canCheckIn = todayProgress && todayProgress.status !== "lost";
   const wonToday = todayProgress?.dayWon || false;
   const completedHabits = habitProgress.filter(h => h.completed).length;
-  const allCompleted = completedHabits === category.habits.length;
 
   return (
     <div className="min-h-screen">
@@ -324,12 +335,12 @@ export default function CategoryDetailPage() {
                 return (
                   <div
                     key={habit.id}
-                    className={`p-4 rounded-lg border transition-all cursor-pointer ${
+                    className={`p-4 rounded-lg border transition-all ${
                       completed 
                         ? "bg-green-500/10 border-green-500/30" 
                         : "bg-gray-800/50 border-gray-700 hover:border-gray-600"
-                    } ${!canCheckIn ? "opacity-50 cursor-not-allowed" : ""}`}
-                    onClick={() => canCheckIn && toggleHabit(habit.id)}
+                    } ${!canCheckIn || checkingIn ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                    onClick={() => !checkingIn && canCheckIn && toggleHabit(habit.id)}
                   >
                     <div className="flex items-center gap-4">
                       <div className="text-2xl">{habit.icon}</div>
@@ -368,29 +379,11 @@ export default function CategoryDetailPage() {
             )}
           </div>
 
-          {canCheckIn && category.habits.length > 0 && completedHabits > 0 && !wonToday && (
+          {completedHabits > 0 && (
             <div className="pt-4 border-t border-gray-800">
-              <Button
-                onClick={handleCheckIn}
-                disabled={checkingIn}
-                className={`w-full flex items-center justify-center gap-2 ${
-                  allCompleted 
-                    ? "bg-green-500 hover:bg-green-600" 
-                    : "bg-purple-500 hover:bg-purple-600"
-                }`}
-              >
-                {checkingIn ? (
-                  <Loader2 className="animate-spin" size={16} />
-                ) : (
-                  <CheckCircle size={16} />
-                )}
-                {allCompleted 
-                  ? "🔥 Mark All Done - Win Today!" 
-                  : completedHabits === 1
-                  ? "Mark 1 Habit Done"
-                  : `Mark ${completedHabits} Habits Done`
-                }
-              </Button>
+              <div className="text-center text-sm text-gray-400">
+                {completedHabits}/{category.habits.length} habits completed today
+              </div>
             </div>
           )}
         </Card>
