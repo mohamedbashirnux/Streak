@@ -158,7 +158,8 @@ export default function CategoryDetailPage() {
     return dayDate.getTime() === today.getTime();
   });
 
-  const canCheckIn = todayProgress && (todayProgress.status === "pending" || todayProgress.status === "won");
+  // Allow checking habits anytime today (pending or won status)
+  const canCheckIn = todayProgress && todayProgress.status !== "lost";
   const wonToday = todayProgress?.dayWon || false;
   const completedHabits = habitProgress.filter(h => h.completed).length;
   const allCompleted = completedHabits === category.habits.length;
