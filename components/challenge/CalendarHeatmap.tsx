@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ChallengeDay } from "@/types";
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay } from "date-fns";
+import { format, eachDayOfInterval, isSameDay } from "date-fns";
 import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
 import { Calendar, Save } from "lucide-react";
@@ -19,6 +19,15 @@ export default function CalendarHeatmap({ days, startDate, challengeId, onSaveNo
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
+  const [selectedMood, setSelectedMood] = useState<string>("");
+
+  const moods = [
+    { emoji: "😊", label: "Great" },
+    { emoji: "🙂", label: "Good" },
+    { emoji: "😐", label: "Okay" },
+    { emoji: "😔", label: "Tough" },
+    { emoji: "😫", label: "Hard" },
+  ];
 
   const start = new Date(startDate);
   const end = new Date(days[days.length - 1]?.date || start);
@@ -46,9 +55,34 @@ export default function CalendarHeatmap({ days, startDate, challengeId, onSaveNo
   const handleDayClick = (date: Date) => {
     const day = days.find((d) => isSameDay(new Date(d.date), date));
     if (day) {
+      // Check if day is in the future
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const clickedDate = new Date(date);
+      clickedDate.setHours(0, 0, 0, 0);
+      
+      if (clickedDate > today) {
+        // Don't allow notes for future days
+        return;
+      }
+      
       setSelectedDay(day);
       setNote(day.notes || "");
+      
+      // Extract mood from existing note if present
+      const moodMatch = day.notes?.match(/^(😊|🙂|😐|😔|😫)/);
+      setSelectedMood(moodMatch ? moodMatch[1] : "");
+      
       setIsModalOpen(true);
+    }
+  };
+
+  const handleMoodSelect = (emoji: string) => {
+    setSelectedMood(emoji);
+    // Add mood to beginning of note if not already there
+    if (!note.startsWith(emoji)) {
+      const cleanNote = note.replace(/^(😊|🙂|😐|😔|😫)\s*/, "");
+      setNote(emoji + (cleanNote ? " " + cleanNote : ""));
     }
   };
 
@@ -108,15 +142,26 @@ export default function CalendarHeatmap({ days, startDate, challengeId, onSaveNo
           const day = days.find((d) => isSameDay(new Date(d.date), date));
           const hasNote = day?.notes && day.notes.length > 0;
           
+          // Check if day is in the future
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          const dayDate = new Date(date);
+          dayDate.setHours(0, 0, 0, 0);
+          const isFuture = dayDate > today;
+          
           return (
             <div
               key={date.toISOString()}
               onClick={() => handleDayClick(date)}
-              className={`aspect-square rounded ${getStatusColor(date)} flex items-center justify-center text-xs text-white font-medium hover:opacity-80 hover:scale-110 transition-all cursor-pointer relative`}
-              title={format(date, "MMM d, yyyy")}
+              className={`aspect-square rounded ${getStatusColor(date)} flex items-center justify-center text-xs text-white font-medium transition-all relative ${
+                isFuture 
+                  ? "opacity-30 cursor-not-allowed" 
+                  : "hover:opacity-80 hover:scale-110 cursor-pointer"
+              }`}
+              title={isFuture ? "Future day" : format(date, "MMM d, yyyy")}
             >
               {format(date, "d")}
-              {hasNote && (
+              {hasNote && !isFuture && (
                 <div className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full border border-gray-900" />
               )}
             </div>
@@ -141,6 +186,29 @@ export default function CalendarHeatmap({ days, startDate, challengeId, onSaveNo
               </span>
             </div>
 
+            {/* How did you feel? */}
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-3">
+                How did you feel today?
+              </label>
+              <div className="flex gap-2 justify-center">
+                {moods.map((mood) => (
+                  <button
+                    key={mood.emoji}
+                    onClick={() => handleMoodSelect(mood.emoji)}
+                    className={`flex flex-col items-center gap-1 p-3 rounded-lg border-2 transition-all ${
+                      selectedMood === mood.emoji
+                        ? "border-green-500 bg-green-500/10"
+                        : "border-gray-700 bg-gray-800 hover:border-gray-600"
+                    }`}
+                  >
+                    <span className="text-2xl">{mood.emoji}</span>
+                    <span className="text-xs text-gray-400">{mood.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
             {/* Notes Section */}
             <div>
               <label className="block text-sm font-medium text-gray-400 mb-2">
@@ -149,7 +217,7 @@ export default function CalendarHeatmap({ days, startDate, challengeId, onSaveNo
               <textarea
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
-                placeholder="Add notes about this day... (e.g., how you felt, challenges, wins)"
+                placeholder="Add notes... (e.g., challenges, wins, thoughts)"
                 className="w-full h-32 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
               />
             </div>
