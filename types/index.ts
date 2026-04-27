@@ -15,6 +15,7 @@ export interface User {
 export interface ChallengeDay {
   date: Date;
   status: DayStatus;
+  notes?: string;
 }
 
 export interface Challenge {

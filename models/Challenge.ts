@@ -8,6 +8,7 @@ const ChallengeDaySchema = new Schema({
     enum: ["success", "failed", "missed", "pending"], 
     default: "pending" 
   },
+  notes: { type: String, default: "" },
 });
 
 const ChallengeSchema = new Schema<Challenge>({

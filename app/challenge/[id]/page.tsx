@@ -94,6 +94,25 @@ export default function ChallengeDetailPage() {
     }
   };
 
+  const handleSaveNote = async (date: Date, notes: string) => {
+    try {
+      const res = await fetch(`/api/challenges/${params.id}/notes`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ date, notes }),
+      });
+
+      if (res.ok) {
+        toast.success("Note saved!");
+        await fetchChallenge(); // Refresh to show updated notes
+      } else {
+        toast.error("Failed to save note");
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+    }
+  };
+
   if (status === "loading" || !session) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -232,7 +251,12 @@ export default function ChallengeDetailPage() {
 
         <Card>
           <h3 className="text-lg font-semibold text-white mb-6">Calendar</h3>
-          <CalendarHeatmap days={challenge.days} startDate={new Date(challenge.startDate)} />
+          <CalendarHeatmap 
+            days={challenge.days} 
+            startDate={new Date(challenge.startDate)}
+            challengeId={challenge._id}
+            onSaveNote={handleSaveNote}
+          />
         </Card>
       </main>
     </div>
