@@ -5,7 +5,22 @@ import mongoose from "mongoose";
 
 export const runtime = "nodejs";
 
-// WARNING: This will delete ALL data from the database!
+// GET method - Shows instructions
+export async function GET() {
+  return NextResponse.json({
+    message: "⚠️ Database Cleanup Endpoint",
+    warning: "This will DELETE ALL DATA from your database!",
+    instructions: "To clean the database, send a DELETE request to this endpoint",
+    methods: {
+      browser: "You cannot use browser directly. Use the button below or curl command.",
+      curl: "curl -X DELETE http://localhost:3000/api/cleanup",
+      fetch: `fetch('/api/cleanup', { method: 'DELETE' }).then(r => r.json()).then(console.log)`
+    },
+    note: "Add ?confirm=yes to the URL and refresh to execute cleanup"
+  });
+}
+
+// DELETE method - Actually cleans the database
 export async function DELETE() {
   try {
     const session = await auth();
