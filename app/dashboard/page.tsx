@@ -6,20 +6,16 @@ import { useRouter } from "next/navigation";
 import { useChallengeStore } from "@/store/challengeStore";
 import Navbar from "@/components/layout/Navbar";
 import ChallengeCard from "@/components/challenge/ChallengeCard";
-import CategoryCard from "@/components/category/CategoryCard";
 import MotivationalQuote from "@/components/dashboard/MotivationalQuote";
 import CreateTrackerModal from "@/components/dashboard/CreateTrackerModal";
 import Button from "@/components/ui/Button";
-import { Plus, Loader2, Folder, Target } from "lucide-react";
+import { Plus, Loader2, Target } from "lucide-react";
 import toast from "react-hot-toast";
-import { Category } from "@/types";
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { challenges, setChallenges, updateChallenge, loading, setLoading } = useChallengeStore();
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [categoriesLoading, setCategoriesLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
 
@@ -36,7 +32,6 @@ export default function DashboardPage() {
   useEffect(() => {
     if (session?.user?.id) {
       fetchChallenges();
-      fetchCategories();
     }
   }, [session]);
 
@@ -52,21 +47,6 @@ export default function DashboardPage() {
       toast.error("Failed to load challenges");
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fetchCategories = async () => {
-    setCategoriesLoading(true);
-    try {
-      const res = await fetch("/api/categories");
-      if (res.ok) {
-        const data = await res.json();
-        setCategories(data);
-      }
-    } catch (error) {
-      toast.error("Failed to load categories");
-    } finally {
-      setCategoriesLoading(false);
     }
   };
 
@@ -114,7 +94,6 @@ export default function DashboardPage() {
   }
 
   const activeChallenges = challenges.filter((c) => c.status === "active");
-  const activeCategories = categories.filter((c) => c.status === "active");
 
   return (
     <div className="min-h-screen">
@@ -132,7 +111,7 @@ export default function DashboardPage() {
             className="flex items-center gap-2"
           >
             <Plus size={20} />
-            Create Tracker
+            Create Habit
           </Button>
         </div>
 
@@ -143,35 +122,12 @@ export default function DashboardPage() {
 
         <MotivationalQuote />
 
-        {/* Categories Section */}
-        {(categoriesLoading || activeCategories.length > 0) && (
-          <div className="mb-12">
-            <div className="flex items-center gap-3 mb-6">
-              <Folder className="text-purple-500" size={24} />
-              <h2 className="text-2xl font-bold text-white">Categories</h2>
-              <span className="text-sm text-gray-400">({activeCategories.length})</span>
-            </div>
-            
-            {categoriesLoading ? (
-              <div className="flex justify-center py-8">
-                <Loader2 className="animate-spin text-purple-500" size={32} />
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                {activeCategories.map((category) => (
-                  <CategoryCard key={category._id} category={category} />
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Regular Challenges Section */}
+        {/* Challenges Section */}
         {(loading || activeChallenges.length > 0) && (
           <div>
             <div className="flex items-center gap-3 mb-6">
               <Target className="text-green-500" size={24} />
-              <h2 className="text-2xl font-bold text-white">Single Challenges</h2>
+              <h2 className="text-2xl font-bold text-white">Your Habits</h2>
               <span className="text-sm text-gray-400">({activeChallenges.length})</span>
             </div>
 
@@ -194,14 +150,13 @@ export default function DashboardPage() {
         )}
 
         {/* Empty State */}
-        {!loading && !categoriesLoading && activeCategories.length === 0 && activeChallenges.length === 0 && (
+        {!loading && activeChallenges.length === 0 && (
           <div className="text-center py-16">
             <div className="mb-6">
-              <Folder className="mx-auto text-purple-500 mb-4" size={64} />
-              <h3 className="text-2xl font-bold text-white mb-2">Start Your Transformation</h3>
+              <Target className="mx-auto text-green-500 mb-4" size={64} />
+              <h3 className="text-2xl font-bold text-white mb-2">Start Your Journey</h3>
               <p className="text-gray-400 text-lg mb-8 max-w-2xl mx-auto">
-                Create a Category to group connected habits together, 
-                or start with a single challenge to build one habit at a time.
+                Create your first habit tracker and start building streaks today!
               </p>
             </div>
             <Button 
@@ -209,7 +164,7 @@ export default function DashboardPage() {
               className="flex items-center gap-2 mx-auto"
             >
               <Plus size={20} />
-              Create Your First Tracker
+              Create Your First Habit
             </Button>
           </div>
         )}
