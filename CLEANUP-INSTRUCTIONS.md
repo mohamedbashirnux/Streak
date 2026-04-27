@@ -20,9 +20,31 @@
 
 ## 🗑️ Clean Your MongoDB Database
 
-You have **2 options** to clean your database:
+### Method 1: Using API Route (Easiest)
 
-### Option 1: Manual Cleanup (MongoDB Atlas Dashboard)
+1. **Make sure your dev server is running:**
+```bash
+npm run dev
+```
+
+2. **Open your browser and go to:**
+```
+http://localhost:3000/api/cleanup
+```
+
+Or use this curl command in your terminal:
+```bash
+curl -X DELETE http://localhost:3000/api/cleanup
+```
+
+This will:
+- Drop ALL collections (users, challenges, categories, stats)
+- Give you a completely fresh start
+- Show you which collections were deleted
+
+---
+
+### Method 2: Manual Cleanup (MongoDB Atlas Dashboard)
 
 1. Go to https://cloud.mongodb.com/
 2. Login to your account
@@ -32,33 +54,6 @@ You have **2 options** to clean your database:
    - `challenges` (to start fresh)
    - `users` (optional - only if you want to reset accounts)
    - `stats` (optional - only if you want to reset stats)
-
----
-
-### Option 2: Automated Script (Recommended)
-
-1. **Update the script with your MongoDB URI:**
-
-```bash
-# Open the cleanup script
-code scripts/cleanup-database.js
-```
-
-2. **Replace the connection string** with your actual MongoDB URI from `.env.local`:
-
-```javascript
-const MONGODB_URI = 'your-actual-mongodb-connection-string-here';
-```
-
-3. **Run the cleanup script:**
-
-```bash
-node scripts/cleanup-database.js
-```
-
-This will:
-- Drop ALL collections (users, challenges, categories, stats)
-- Give you a completely fresh start
 
 ---
 
@@ -86,10 +81,11 @@ npm run dev
 
 ## ⚠️ Warning:
 
-Running the cleanup script will **DELETE ALL DATA** from your database. Make sure you're okay with losing:
+Running the cleanup will **DELETE ALL DATA** from your database. Make sure you're okay with losing:
 - All user accounts
 - All challenges
 - All categories
 - All stats
 
 This cannot be undone!
+
