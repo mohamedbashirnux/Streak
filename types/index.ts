@@ -9,6 +9,8 @@ export interface User {
   password?: string;
   avatar?: string;
   badges: string[];
+  timezone?: string;
+  theme?: "light" | "dark";
   createdAt: Date;
 }
 
