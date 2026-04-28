@@ -33,12 +33,18 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { name, avatar } = await req.json();
+    const { name, avatar, timezone, theme } = await req.json();
 
     await connectDB();
+    const updateData: any = {};
+    if (name !== undefined) updateData.name = name;
+    if (avatar !== undefined) updateData.avatar = avatar;
+    if (timezone !== undefined) updateData.timezone = timezone;
+    if (theme !== undefined) updateData.theme = theme;
+
     const user = await UserModel.findByIdAndUpdate(
       session.user.id,
-      { name, avatar },
+      updateData,
       { new: true }
     ).select("-password");
 
