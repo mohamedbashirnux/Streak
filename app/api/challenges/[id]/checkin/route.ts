@@ -73,7 +73,7 @@ export async function POST(
       }
 
       const badge = getBadgeForStreak(newStreak);
-      earnedBadge = badge ? badge.id : null;
+      earnedBadge = badge ? badge.name : null;
 
       if (earnedBadge) {
         await UserModel.findByIdAndUpdate(session.user.id, {
@@ -131,6 +131,13 @@ export async function POST(
     });
   } catch (error) {
     console.error("Check-in error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    console.error("Error details:", {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : 'No stack trace'
+    });
+    return NextResponse.json({ 
+      error: "Internal server error",
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
   }
 }
