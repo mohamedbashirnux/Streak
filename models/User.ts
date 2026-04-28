@@ -7,6 +7,8 @@ const UserSchema = new Schema<User>({
   password: { type: String },
   avatar: { type: String },
   badges: { type: [String], default: [] },
+  timezone: { type: String, default: "UTC" },
+  theme: { type: String, enum: ["light", "dark"], default: "dark" },
   createdAt: { type: Date, default: Date.now },
 });
 
