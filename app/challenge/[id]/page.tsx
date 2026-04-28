@@ -10,7 +10,7 @@ import ProgressRing from "@/components/challenge/ProgressRing";
 import CalendarHeatmap from "@/components/challenge/CalendarHeatmap";
 import CheckInButton from "@/components/challenge/CheckInButton";
 import { Challenge } from "@/types";
-import { Loader2, Trash2, Ban, Target, Flame } from "lucide-react";
+import { Loader2, Trash2, Ban, Target, Flame, Trophy, Star } from "lucide-react";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
 
@@ -145,6 +145,21 @@ export default function ChallengeDetailPage() {
 
   const canCheckIn = todayDay && todayDay.status === "pending" && challenge.status === "active";
 
+  // Milestones
+  const milestones = [
+    { days: 7, name: "Week Warrior", emoji: "🔥", color: "orange" },
+    { days: 21, name: "Habit Former", emoji: "💪", color: "blue" },
+    { days: 30, name: "Month Master", emoji: "⭐", color: "yellow" },
+    { days: 60, name: "Consistency King", emoji: "👑", color: "purple" },
+    { days: 90, name: "Legend", emoji: "🏆", color: "green" },
+    { days: 180, name: "Half Year Hero", emoji: "🎯", color: "cyan" },
+    { days: 365, name: "Year Champion", emoji: "🎉", color: "pink" },
+  ];
+
+  const earnedMilestones = milestones.filter(m => challenge.currentStreak >= m.days);
+  const nextMilestone = milestones.find(m => challenge.currentStreak < m.days);
+  const daysToNext = nextMilestone ? nextMilestone.days - challenge.currentStreak : 0;
+
   return (
     <div className="min-h-screen">
       <Navbar />
@@ -238,6 +253,93 @@ export default function ChallengeDetailPage() {
             <p className="text-gray-300 italic">"{challenge.motivation}"</p>
           </Card>
         )}
+
+        {/* Milestones & Achievements */}
+        <Card className="mb-8">
+          <div className="flex items-center gap-3 mb-6">
+            <Trophy className="text-yellow-500" size={24} />
+            <h3 className="text-xl font-semibold text-white">Milestones & Achievements</h3>
+          </div>
+
+          {/* Next Milestone Countdown */}
+          {nextMilestone && (
+            <div className="mb-6 p-4 bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/30 rounded-lg">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <Star className="text-purple-500" size={20} />
+                  <span className="text-white font-semibold">Next Milestone</span>
+                </div>
+                <span className="text-2xl">{nextMilestone.emoji}</span>
+              </div>
+              <p className="text-gray-300 mb-3">{nextMilestone.name}</p>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-gray-400">
+                  {daysToNext} day{daysToNext !== 1 ? 's' : ''} to go
+                </span>
+                <span className="text-purple-500 font-bold">
+                  {challenge.currentStreak}/{nextMilestone.days} days
+                </span>
+              </div>
+              <div className="mt-2 h-2 bg-gray-800 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-gradient-to-r from-purple-500 to-blue-500 transition-all duration-500"
+                  style={{ width: `${(challenge.currentStreak / nextMilestone.days) * 100}%` }}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Earned Badges */}
+          <div>
+            <h4 className="text-sm font-medium text-gray-400 mb-4">
+              Earned Badges ({earnedMilestones.length}/{milestones.length})
+            </h4>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              {milestones.map((milestone) => {
+                const isEarned = challenge.currentStreak >= milestone.days;
+                return (
+                  <div
+                    key={milestone.days}
+                    className={`p-4 rounded-lg border-2 transition-all ${
+                      isEarned
+                        ? `border-${milestone.color}-500 bg-${milestone.color}-500/10 hover:scale-105`
+                        : "border-gray-700 bg-gray-800/50 opacity-50"
+                    }`}
+                  >
+                    <div className="text-center">
+                      <div className={`text-4xl mb-2 ${isEarned ? "animate-bounce" : "grayscale"}`}>
+                        {milestone.emoji}
+                      </div>
+                      <p className={`text-sm font-semibold mb-1 ${
+                        isEarned ? "text-white" : "text-gray-500"
+                      }`}>
+                        {milestone.name}
+                      </p>
+                      <p className="text-xs text-gray-400">{milestone.days} days</p>
+                      {isEarned && (
+                        <div className="mt-2 text-xs text-green-500 font-medium">
+                          ✓ Unlocked
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Celebration Message */}
+          {earnedMilestones.length > 0 && (
+            <div className="mt-6 p-4 bg-green-500/10 border border-green-500/30 rounded-lg text-center">
+              <p className="text-green-500 font-semibold">
+                🎉 Amazing! You've unlocked {earnedMilestones.length} milestone{earnedMilestones.length !== 1 ? 's' : ''}!
+              </p>
+              <p className="text-gray-400 text-sm mt-1">
+                Keep going to unlock all {milestones.length} achievements!
+              </p>
+            </div>
+          )}
+        </Card>
 
         {challenge.status === "active" && (
           <div className="mb-8 max-w-md mx-auto">
