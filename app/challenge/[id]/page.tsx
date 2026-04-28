@@ -10,7 +10,7 @@ import ProgressRing from "@/components/challenge/ProgressRing";
 import CalendarHeatmap from "@/components/challenge/CalendarHeatmap";
 import CheckInButton from "@/components/challenge/CheckInButton";
 import { Challenge } from "@/types";
-import { Loader2, Trash2, Ban, Target, Flame, Trophy, Star } from "lucide-react";
+import { Loader2, Trash2, Ban, Target, Flame, Trophy, Star, BarChart, Calendar, TrendingUp, CheckCircle, Percent } from "lucide-react";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
 
@@ -160,6 +160,48 @@ export default function ChallengeDetailPage() {
   const nextMilestone = milestones.find(m => challenge.currentStreak < m.days);
   const daysToNext = nextMilestone ? nextMilestone.days - challenge.currentStreak : 0;
 
+  // Streak Insights Calculations
+  const totalDays = challenge.days.length;
+  const successfulDays = challenge.days.filter(day => day.status === "success").length;
+  const failedDays = challenge.days.filter(day => day.status === "failed").length;
+  const successRate = totalDays > 0 ? Math.round((successfulDays / totalDays) * 100) : 0;
+  
+  // Best streak this month
+  const currentMonth = new Date().getMonth();
+  const currentYear = new Date().getFullYear();
+  const thisMonthDays = challenge.days.filter(day => {
+    const dayDate = new Date(day.date);
+    return dayDate.getMonth() === currentMonth && dayDate.getFullYear() === currentYear;
+  });
+  
+  // Calculate best streak this month
+  let bestStreakThisMonth = 0;
+  let currentMonthStreak = 0;
+  thisMonthDays.forEach(day => {
+    if (day.status === "success") {
+      currentMonthStreak++;
+      bestStreakThisMonth = Math.max(bestStreakThisMonth, currentMonthStreak);
+    } else {
+      currentMonthStreak = 0;
+    }
+  });
+  
+  // Average streak length (calculate all streaks)
+  const streaks: number[] = [];
+  let currentStreakCount = 0;
+  challenge.days.forEach(day => {
+    if (day.status === "success") {
+      currentStreakCount++;
+    } else {
+      if (currentStreakCount > 0) {
+        streaks.push(currentStreakCount);
+        currentStreakCount = 0;
+      }
+    }
+  });
+  if (currentStreakCount > 0) streaks.push(currentStreakCount);
+  const averageStreak = streaks.length > 0 ? Math.round(streaks.reduce((a, b) => a + b, 0) / streaks.length) : 0;
+
   return (
     <div className="min-h-screen">
       <Navbar />
@@ -253,6 +295,74 @@ export default function ChallengeDetailPage() {
             <p className="text-gray-300 italic">"{challenge.motivation}"</p>
           </Card>
         )}
+
+        {/* Streak Insights */}
+        <Card className="mb-8">
+          <div className="flex items-center gap-3 mb-6">
+            <BarChart className="text-blue-500" size={24} />
+            <h3 className="text-xl font-semibold text-white">Streak Insights</h3>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {/* Best Streak This Month */}
+            <div className="p-4 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <Calendar className="text-blue-500" size={16} />
+                <span className="text-xs text-gray-400 uppercase tracking-wide">This Month</span>
+              </div>
+              <p className="text-2xl font-bold text-white">{bestStreakThisMonth}</p>
+              <p className="text-xs text-gray-400">Best Streak</p>
+            </div>
+
+            {/* Average Streak Length */}
+            <div className="p-4 bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <TrendingUp className="text-purple-500" size={16} />
+                <span className="text-xs text-gray-400 uppercase tracking-wide">Average</span>
+              </div>
+              <p className="text-2xl font-bold text-white">{averageStreak}</p>
+              <p className="text-xs text-gray-400">Streak Length</p>
+            </div>
+
+            {/* Total Successful Days */}
+            <div className="p-4 bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/30 rounded-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <CheckCircle className="text-green-500" size={16} />
+                <span className="text-xs text-gray-400 uppercase tracking-wide">Success</span>
+              </div>
+              <p className="text-2xl font-bold text-white">{successfulDays}</p>
+              <p className="text-xs text-gray-400">Total Days</p>
+            </div>
+
+            {/* Success Rate Percentage */}
+            <div className="p-4 bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border border-yellow-500/30 rounded-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <Percent className="text-yellow-500" size={16} />
+                <span className="text-xs text-gray-400 uppercase tracking-wide">Success Rate</span>
+              </div>
+              <p className="text-2xl font-bold text-white">{successRate}%</p>
+              <p className="text-xs text-gray-400">Overall</p>
+            </div>
+          </div>
+
+          {/* Additional Stats Row */}
+          <div className="mt-4 pt-4 border-t border-gray-800">
+            <div className="grid grid-cols-3 gap-4 text-center">
+              <div>
+                <p className="text-sm text-gray-400">Total Streaks</p>
+                <p className="text-lg font-semibold text-white">{streaks.length}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-400">Failed Days</p>
+                <p className="text-lg font-semibold text-red-400">{failedDays}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-400">Longest Ever</p>
+                <p className="text-lg font-semibold text-green-400">{challenge.longestStreak}</p>
+              </div>
+            </div>
+          </div>
+        </Card>
 
         {/* Milestones & Achievements */}
         <Card className="mb-8">
