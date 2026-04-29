@@ -2,7 +2,7 @@
 
 import { ReactNode, useEffect } from "react";
 import { X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/client-utils";
 
 interface ModalProps {
   isOpen: boolean;
