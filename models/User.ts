@@ -9,6 +9,9 @@ const UserSchema = new Schema<User>({
   badges: { type: [String], default: [] },
   timezone: { type: String, default: "UTC" },
   theme: { type: String, enum: ["light", "dark"], default: "dark" },
+  xp: { type: Number, default: 0 },
+  level: { type: Number, default: 1 },
+  totalXP: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
 });
 
