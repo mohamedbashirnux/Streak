@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getRandomQuote } from "@/lib/utils";
+import { getRandomQuote } from "@/lib/client-utils";
 import { Quote } from "lucide-react";
 
 export default function MotivationalQuote() {
