@@ -4,7 +4,7 @@ import connectDB from "@/lib/mongodb";
 import ChallengeModel from "@/models/Challenge";
 import StatsModel from "@/models/Stats";
 import UserModel from "@/models/User";
-import { getBadgeForStreak } from "@/lib/utils";
+import { getBadgeForStreak, awardXP, XP_REWARDS } from "@/lib/utils";
 
 export const runtime = "nodejs";
 
@@ -120,9 +120,30 @@ export async function POST(
 
     await challenge.save();
 
+    // Award XP for check-in
+    let xpEarned = 0;
+    if (success) {
+      xpEarned += XP_REWARDS.DAILY_CHECKIN;
+      
+      // Bonus XP for milestones
+      const milestones = [7, 21, 30, 60, 90, 180, 365];
+      if (milestones.includes(newStreak)) {
+        xpEarned += XP_REWARDS.STREAK_MILESTONE;
+      }
+      
+      // Bonus XP for earning badges
+      if (earnedBadge) {
+        xpEarned += XP_REWARDS.BADGE_EARNED;
+      }
+      
+      // Award XP to user
+      await awardXP(session.user.id, xpEarned, `Check-in: ${challenge.name}`);
+    }
+
     return NextResponse.json({
       challenge,
       earnedBadge,
+      xpEarned,
       message: success
         ? newStatus === "completed"
           ? "🎉 Challenge completed!"
