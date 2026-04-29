@@ -8,8 +8,10 @@ import Navbar from "@/components/layout/Navbar";
 import ChallengeCard from "@/components/challenge/ChallengeCard";
 import MotivationalQuote from "@/components/dashboard/MotivationalQuote";
 import CreateTrackerModal from "@/components/dashboard/CreateTrackerModal";
+import GamificationPanel from "@/components/dashboard/GamificationPanel";
 import Button from "@/components/ui/Button";
-import { Plus, Loader2, Target } from "lucide-react";
+import { Plus, Loader2, Target, Trophy } from "lucide-react";
+import { User } from "@/types";
 import toast from "react-hot-toast";
 
 export default function DashboardPage() {
@@ -18,6 +20,7 @@ export default function DashboardPage() {
   const { challenges, setChallenges, updateChallenge, loading, setLoading } = useChallengeStore();
   const [mounted, setMounted] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -32,6 +35,7 @@ export default function DashboardPage() {
   useEffect(() => {
     if (session?.user?.id) {
       fetchChallenges();
+      fetchUserProfile();
     }
   }, [session]);
 
@@ -47,6 +51,18 @@ export default function DashboardPage() {
       toast.error("Failed to load challenges");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchUserProfile = async () => {
+    try {
+      const res = await fetch("/api/user/profile");
+      if (res.ok) {
+        const userData = await res.json();
+        setUser(userData);
+      }
+    } catch (error) {
+      console.error("Failed to load user profile:", error);
     }
   };
 
@@ -66,6 +82,18 @@ export default function DashboardPage() {
         
         if (data.earnedBadge) {
           toast.success(`🎉 Badge earned: ${data.earnedBadge}!`, { duration: 5000 });
+        }
+
+        // Update user XP if awarded
+        if (data.xpEarned) {
+          toast.success(`+${data.xpEarned} XP earned! 🎉`);
+          if (user) {
+            setUser(prev => prev ? {
+              ...prev,
+              totalXP: prev.totalXP + data.xpEarned,
+              xp: prev.xp + data.xpEarned
+            } : null);
+          }
         }
 
         // Celebrate milestones
@@ -106,13 +134,23 @@ export default function DashboardPage() {
             </h1>
             <p className="text-gray-400">Transform your life, one day at a time</p>
           </div>
-          <Button 
-            onClick={() => setShowCreateModal(true)} 
-            className="flex items-center gap-2"
-          >
-            <Plus size={20} />
-            Create Habit
-          </Button>
+          <div className="flex gap-3">
+            <Button 
+              variant="secondary"
+              onClick={() => router.push("/leaderboard")}
+              className="flex items-center gap-2"
+            >
+              <Trophy size={20} />
+              Leaderboard
+            </Button>
+            <Button 
+              onClick={() => setShowCreateModal(true)} 
+              className="flex items-center gap-2"
+            >
+              <Plus size={20} />
+              Create Habit
+            </Button>
+          </div>
         </div>
 
         <CreateTrackerModal 
@@ -120,54 +158,69 @@ export default function DashboardPage() {
           onClose={() => setShowCreateModal(false)} 
         />
 
-        <MotivationalQuote />
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-3 space-y-8">
+            <MotivationalQuote />
 
-        {/* Challenges Section */}
-        {(loading || activeChallenges.length > 0) && (
-          <div>
-            <div className="flex items-center gap-3 mb-6">
-              <Target className="text-green-500" size={24} />
-              <h2 className="text-2xl font-bold text-white">Your Habits</h2>
-              <span className="text-sm text-gray-400">({activeChallenges.length})</span>
-            </div>
+            {/* Challenges Section */}
+            {(loading || activeChallenges.length > 0) && (
+              <div>
+                <div className="flex items-center gap-3 mb-6">
+                  <Target className="text-green-500" size={24} />
+                  <h2 className="text-2xl font-bold text-white">Your Habits</h2>
+                  <span className="text-sm text-gray-400">({activeChallenges.length})</span>
+                </div>
 
-            {loading ? (
-              <div className="flex justify-center py-8">
-                <Loader2 className="animate-spin text-green-500" size={32} />
+                {loading ? (
+                  <div className="flex justify-center py-8">
+                    <Loader2 className="animate-spin text-green-500" size={32} />
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {activeChallenges.map((challenge) => (
+                      <ChallengeCard
+                        key={challenge._id}
+                        challenge={challenge}
+                        onCheckIn={handleCheckIn}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {activeChallenges.map((challenge) => (
-                  <ChallengeCard
-                    key={challenge._id}
-                    challenge={challenge}
-                    onCheckIn={handleCheckIn}
-                  />
-                ))}
+            )}
+
+            {/* Empty State */}
+            {!loading && activeChallenges.length === 0 && (
+              <div className="text-center py-16">
+                <div className="mb-6">
+                  <Target className="mx-auto text-green-500 mb-4" size={64} />
+                  <h3 className="text-2xl font-bold text-white mb-2">Start Your Journey</h3>
+                  <p className="text-gray-400 text-lg mb-8 max-w-2xl mx-auto">
+                    Create your first habit tracker and start building streaks today!
+                  </p>
+                </div>
+                <Button 
+                  onClick={() => setShowCreateModal(true)}
+                  className="flex items-center gap-2 mx-auto"
+                >
+                  <Plus size={20} />
+                  Create Your First Habit
+                </Button>
               </div>
             )}
           </div>
-        )}
 
-        {/* Empty State */}
-        {!loading && activeChallenges.length === 0 && (
-          <div className="text-center py-16">
-            <div className="mb-6">
-              <Target className="mx-auto text-green-500 mb-4" size={64} />
-              <h3 className="text-2xl font-bold text-white mb-2">Start Your Journey</h3>
-              <p className="text-gray-400 text-lg mb-8 max-w-2xl mx-auto">
-                Create your first habit tracker and start building streaks today!
-              </p>
-            </div>
-            <Button 
-              onClick={() => setShowCreateModal(true)}
-              className="flex items-center gap-2 mx-auto"
-            >
-              <Plus size={20} />
-              Create Your First Habit
-            </Button>
+          {/* Gamification Sidebar */}
+          <div className="lg:col-span-1">
+            {user && (
+              <GamificationPanel 
+                user={user} 
+                onUserUpdate={setUser}
+              />
+            )}
           </div>
-        )}
+        </div>
       </main>
     </div>
   );
