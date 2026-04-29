@@ -7,7 +7,7 @@ import Navbar from "@/components/layout/Navbar";
 import Card from "@/components/ui/Card";
 import { Stats } from "@/types";
 import { Loader2, Trophy, Target, XCircle, Flame, Calendar, Crown, Star } from "lucide-react";
-import { badges, getRarityColor, getRarityLabel } from "@/lib/utils";
+import { badges, getRarityColor, getRarityLabel } from "@/lib/client-utils";
 import toast from "react-hot-toast";
 
 export default function StatsPage() {
