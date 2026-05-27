@@ -20,6 +20,8 @@ export async function GET(req: NextRequest) {
     today.setHours(0, 0, 0, 0);
 
     // For each active challenge, detect and mark missed days, reset streak
+    const brokenStreakIds: string[] = [];
+
     for (const challenge of challenges) {
       if (challenge.status !== "active") continue;
 
@@ -34,12 +36,13 @@ export async function GET(req: NextRequest) {
         if (dayDate < today && day.status === "pending") {
           challenge.days[i].status = "missed";
           changed = true;
-          streakWasBroken = true;
+          if (!streakWasBroken) streakWasBroken = true;
         }
       }
 
       if (streakWasBroken && challenge.currentStreak > 0) {
         challenge.currentStreak = 0;
+        brokenStreakIds.push(challenge._id.toString());
       }
 
       if (changed) {
@@ -47,7 +50,13 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    return NextResponse.json(challenges);
+    // Attach a flag to each challenge so the UI knows which ones just broke
+    const result = challenges.map(c => ({
+      ...c.toObject(),
+      streakBroken: brokenStreakIds.includes(c._id.toString()),
+    }));
+
+    return NextResponse.json(result);
   } catch (error) {
     console.error("Get challenges error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
