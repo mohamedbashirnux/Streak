@@ -13,6 +13,7 @@ const ChallengeDaySchema = new Schema({
 
 const ChallengeSchema = new Schema<Challenge>({
   userId: { type: String, required: true, ref: "User" },
+  journeyId: { type: String, default: null },
   name: { type: String, required: true },
   type: { type: String, enum: ["avoid", "build"], required: true },
   duration: { type: Number, required: true },
