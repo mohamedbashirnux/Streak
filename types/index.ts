@@ -37,6 +37,7 @@ export interface Challenge {
   days: ChallengeDay[];
   createdAt: Date;
   completedAt?: Date;
+  streakBroken?: boolean;
 }
 
 export interface Stats {
