@@ -26,6 +26,7 @@ export interface ChallengeDay {
 export interface Challenge {
   _id: string;
   userId: string;
+  journeyId?: string;
   name: string;
   type: ChallengeType;
   duration: number;
@@ -38,6 +39,18 @@ export interface Challenge {
   createdAt: Date;
   completedAt?: Date;
   streakBroken?: boolean;
+}
+
+export interface Journey {
+  _id: string;
+  userId: string;
+  name: string;
+  description?: string;
+  color: string;
+  duration: number;
+  startDate: Date;
+  status: "active" | "completed" | "archived";
+  createdAt: Date;
 }
 
 export interface Stats {
