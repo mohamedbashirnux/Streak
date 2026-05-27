@@ -10,8 +10,8 @@ import ProgressRing from "@/components/challenge/ProgressRing";
 import CalendarHeatmap from "@/components/challenge/CalendarHeatmap";
 import CheckInButton from "@/components/challenge/CheckInButton";
 import { Challenge } from "@/types";
-import { Loader2, Trash2, Ban, Target, Flame, Trophy, Star, BarChart, Calendar, TrendingUp, CheckCircle, Percent } from "lucide-react";
-import { format } from "date-fns";
+import { Loader2, Trash2, Ban, Target, Flame, Trophy, Star, BarChart, Calendar, TrendingUp, CheckCircle, Percent, AlertTriangle, RefreshCw } from "lucide-react";
+import { format, formatDistanceToNow } from "date-fns";
 import toast from "react-hot-toast";
 
 export default function ChallengeDetailPage() {
@@ -20,6 +20,8 @@ export default function ChallengeDetailPage() {
   const params = useParams();
   const [challenge, setChallenge] = useState<Challenge | null>(null);
   const [loading, setLoading] = useState(true);
+  const [streakBroken, setStreakBroken] = useState(false);
+  const [missedDayDate, setMissedDayDate] = useState<Date | null>(null);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -39,6 +41,11 @@ export default function ChallengeDetailPage() {
       if (res.ok) {
         const data = await res.json();
         setChallenge(data);
+        // Check if the API detected a broken streak
+        if (data.streakBroken) {
+          setStreakBroken(true);
+          setMissedDayDate(data.missedDayDate ? new Date(data.missedDayDate) : null);
+        }
       } else {
         toast.error("Challenge not found");
         router.push("/dashboard");
@@ -225,8 +232,44 @@ export default function ChallengeDetailPage() {
           </Button>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
-          <Card className="flex flex-col items-center justify-center">
+        {/* Streak Broken Banner */}
+        {streakBroken && (
+          <div className="mb-8 p-5 bg-red-500/10 border border-red-500/40 rounded-xl">
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 bg-red-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <AlertTriangle className="text-red-400" size={20} />
+              </div>
+              <div className="flex-1">
+                <h4 className="text-red-400 font-bold text-lg mb-1">
+                  💔 Streak Broken
+                </h4>
+                <p className="text-gray-300 text-sm leading-relaxed">
+                  You missed{" "}
+                  <span className="text-white font-semibold">
+                    {missedDayDate ? format(missedDayDate, "MMMM d") : "a day"}
+                  </span>
+                  {missedDayDate && (
+                    <span className="text-gray-400">
+                      {" "}({formatDistanceToNow(missedDayDate, { addSuffix: true })})
+                    </span>
+                  )}
+                  . Your streak has been reset to 0.
+                </p>
+                <p className="text-gray-400 text-sm mt-2">
+                  Don't let this stop you — every champion has setbacks. Start fresh today and build an even stronger streak! 🔥
+                </p>
+              </div>
+              <button
+                onClick={() => setStreakBroken(false)}
+                className="text-gray-500 hover:text-gray-300 transition-colors flex-shrink-0 text-xl leading-none"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div className="grid md:grid-cols-3 gap-6 mb-8">          <Card className="flex flex-col items-center justify-center">
             <ProgressRing current={challenge.currentStreak} total={challenge.duration} />
             <p className="text-gray-400 mt-4">Progress</p>
           </Card>
