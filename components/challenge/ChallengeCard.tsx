@@ -5,8 +5,7 @@ import Card from "@/components/ui/Card";
 import ProgressBar from "./ProgressBar";
 import CheckInButton from "./CheckInButton";
 import { motion } from "framer-motion";
-import { Flame, Target, Ban } from "lucide-react";
-import { format, isToday } from "date-fns";
+import { Flame, Target, Ban, AlertTriangle } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface ChallengeCardProps {
@@ -28,6 +27,7 @@ export default function ChallengeCard({ challenge, onCheckIn }: ChallengeCardPro
 
   const canCheckIn = todayDay && todayDay.status === "pending";
   const doneToday = todayDay?.status === "success";
+  const streakBroken = challenge.streakBroken === true;
 
   return (
     <motion.div
@@ -36,16 +36,34 @@ export default function ChallengeCard({ challenge, onCheckIn }: ChallengeCardPro
       transition={{ duration: 0.3 }}
     >
       <Card
-        className={`cursor-pointer transition-all ${doneToday ? "border-green-500/40 bg-green-500/5" : ""}`}
+        className={`cursor-pointer transition-all ${
+          streakBroken
+            ? "border-red-500/40 bg-red-500/5"
+            : doneToday
+            ? "border-green-500/40 bg-green-500/5"
+            : ""
+        }`}
         onClick={() => router.push(`/challenge/${challenge._id}`)}
       >
+        {/* Streak broken notice */}
+        {streakBroken && (
+          <div className="flex items-center gap-2 mb-4 px-3 py-2 bg-red-500/10 border border-red-500/30 rounded-lg">
+            <AlertTriangle className="text-red-400 flex-shrink-0" size={15} />
+            <p className="text-red-400 text-xs font-medium">
+              Streak broken — you missed a day. Tap to restart 🔥
+            </p>
+          </div>
+        )}
+
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
-            <div className={`w-12 h-12 rounded-full flex items-center justify-center ${doneToday ? "bg-green-500/20" : "bg-green-500/10"}`}>
+            <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+              streakBroken ? "bg-red-500/10" : doneToday ? "bg-green-500/20" : "bg-green-500/10"
+            }`}>
               {challenge.type === "avoid" ? (
-                <Ban className="text-green-500" size={24} />
+                <Ban className={streakBroken ? "text-red-400" : "text-green-500"} size={24} />
               ) : (
-                <Target className="text-green-500" size={24} />
+                <Target className={streakBroken ? "text-red-400" : "text-green-500"} size={24} />
               )}
             </div>
             <div>
@@ -53,7 +71,7 @@ export default function ChallengeCard({ challenge, onCheckIn }: ChallengeCardPro
               <p className="text-sm text-gray-400 capitalize">{challenge.type} habit</p>
             </div>
           </div>
-          <div className="flex items-center gap-2 text-orange-500">
+          <div className={`flex items-center gap-2 ${streakBroken ? "text-red-400" : "text-orange-500"}`}>
             <Flame size={20} />
             <span className="text-lg font-bold">{challenge.currentStreak}</span>
           </div>
