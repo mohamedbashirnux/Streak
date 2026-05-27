@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { name, type, duration, motivation, startDate } = await req.json();
+    const { name, type, duration, motivation, startDate, journeyId } = await req.json();
 
     if (!name || !type || !duration) {
       return NextResponse.json(
@@ -91,6 +91,7 @@ export async function POST(req: NextRequest) {
 
     const challenge = await ChallengeModel.create({
       userId: session.user.id,
+      journeyId: journeyId || null,
       name,
       type,
       duration,
