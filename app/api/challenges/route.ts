@@ -16,6 +16,37 @@ export async function GET(req: NextRequest) {
     await connectDB();
     const challenges = await ChallengeModel.find({ userId: session.user.id }).sort({ createdAt: -1 });
 
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // For each active challenge, detect and mark missed days, reset streak
+    for (const challenge of challenges) {
+      if (challenge.status !== "active") continue;
+
+      let changed = false;
+      let streakWasBroken = false;
+
+      for (let i = 0; i < challenge.days.length; i++) {
+        const day = challenge.days[i];
+        const dayDate = new Date(day.date);
+        dayDate.setHours(0, 0, 0, 0);
+
+        if (dayDate < today && day.status === "pending") {
+          challenge.days[i].status = "missed";
+          changed = true;
+          streakWasBroken = true;
+        }
+      }
+
+      if (streakWasBroken && challenge.currentStreak > 0) {
+        challenge.currentStreak = 0;
+      }
+
+      if (changed) {
+        await challenge.save();
+      }
+    }
+
     return NextResponse.json(challenges);
   } catch (error) {
     console.error("Get challenges error:", error);
