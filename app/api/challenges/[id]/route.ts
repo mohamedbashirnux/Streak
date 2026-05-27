@@ -27,6 +27,45 @@ export async function GET(
       return NextResponse.json({ error: "Challenge not found" }, { status: 404 });
     }
 
+    // Detect missed days: any pending day before today should be marked as missed
+    // and the streak should be reset if the last successful day wasn't yesterday
+    if (challenge.status === "active") {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      let streakWasBroken = false;
+      let missedDayDate: Date | null = null;
+
+      for (let i = 0; i < challenge.days.length; i++) {
+        const day = challenge.days[i];
+        const dayDate = new Date(day.date);
+        dayDate.setHours(0, 0, 0, 0);
+
+        // If this day is in the past and still pending, it was missed
+        if (dayDate < today && day.status === "pending") {
+          challenge.days[i].status = "missed";
+          if (!streakWasBroken) {
+            streakWasBroken = true;
+            missedDayDate = dayDate;
+          }
+        }
+      }
+
+      // If any days were missed, reset the streak
+      if (streakWasBroken && challenge.currentStreak > 0) {
+        challenge.currentStreak = 0;
+        await challenge.save();
+
+        return NextResponse.json({
+          ...challenge.toObject(),
+          streakBroken: true,
+          missedDayDate,
+        });
+      } else if (streakWasBroken) {
+        await challenge.save();
+      }
+    }
+
     return NextResponse.json(challenge);
   } catch (error) {
     console.error("Get challenge error:", error);
