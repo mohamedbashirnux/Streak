@@ -8,6 +8,7 @@ import { Target } from "lucide-react";
 interface CreateTrackerModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onGroupCreated?: () => void;
 }
 
 export default function CreateTrackerModal({ isOpen, onClose }: CreateTrackerModalProps) {
@@ -19,24 +20,19 @@ export default function CreateTrackerModal({ isOpen, onClose }: CreateTrackerMod
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Create Habit Tracker">
+    <Modal isOpen={isOpen} onClose={onClose} title="Create Habit">
       <div className="text-center space-y-6">
         <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto">
           <Target className="text-green-500" size={40} />
         </div>
-        
         <div>
-          <h3 className="text-xl font-bold text-white mb-2">Track Your Habit</h3>
+          <h3 className="text-xl font-bold text-white mb-2">New Habit</h3>
           <p className="text-gray-400">
-            Create a new habit tracker and start building your streak today!
+            Create a habit and optionally add it to a group to track multiple habits together.
           </p>
         </div>
-
-        <Button
-          onClick={handleCreate}
-          className="w-full bg-green-500 hover:bg-green-600"
-        >
-          Create Habit Tracker
+        <Button onClick={handleCreate} className="w-full">
+          Create Habit
         </Button>
       </div>
     </Modal>
