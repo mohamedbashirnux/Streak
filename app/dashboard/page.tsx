@@ -143,7 +143,11 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <CreateTrackerModal isOpen={showCreateModal} onClose={() => setShowCreateModal(false)} />
+        <CreateTrackerModal
+          isOpen={showCreateModal}
+          onClose={() => setShowCreateModal(false)}
+          onGroupCreated={fetchJourneys}
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Main Content */}
